@@ -1,0 +1,12 @@
+{
+  "name": "product-context",
+  "vendor": "vtex",
+  "version": "0.0.0",
+  "title": "VTEX Product Context",
+  "description": "",
+  "settingsSchema": {},
+  "dependencies": {},
+  "builders": {
+    "react": "3.x"
+  }
+}
