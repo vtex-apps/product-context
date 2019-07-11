@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-const ProductDispatchContext = createContext({})
+const ProductDispatchContext = createContext(null)
 function useProductDispatch() {
   return useContext(ProductDispatchContext)
 }
