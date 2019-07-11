@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
-- Initalize ProductDispatchContext with null, allowing easier detection of uninitialized context.
+- Initialise ProductDispatchContext with null, allowing easier detection of uninitialised context.
 
 ## [0.0.5] - 2019-06-27
 
