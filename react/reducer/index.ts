@@ -98,13 +98,7 @@ export function getSelectedItem(skuId: string | undefined, items: Item[]) {
     : items.find(findAvailableProduct) || items[0]
 }
 
-function initReducer({
-  query,
-  product,
-}: {
-  query: Record<string, any>
-  product: MaybeProduct
-}) {
+function initReducer({ query, product }: ProductAndQuery) {
   const items = (product && product.items) || []
   return {
     ...defaultState,
