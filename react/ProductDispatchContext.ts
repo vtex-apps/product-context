@@ -1,6 +1,10 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, Dispatch } from 'react'
 
-const ProductDispatchContext = createContext(null)
+// type DispatchFn =
+
+export const ProductDispatchContext = createContext<Dispatch<Actions> | null>(
+  null
+)
 function useProductDispatch() {
   return useContext(ProductDispatchContext)
 }
