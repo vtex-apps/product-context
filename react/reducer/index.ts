@@ -19,37 +19,42 @@ function reducer(
   action: Actions
 ): ProductContextState {
   switch (action.type) {
-    case 'SET_QUANTITY':
+    case 'SET_QUANTITY': {
+      const args = action.args || {}
       return {
         ...state,
-        selectedQuantity: action.args.quantity,
+        selectedQuantity: args.quantity,
       }
+    }
     case 'SKU_SELECTOR_SET_VARIATIONS_SELECTED': {
+      const args = action.args || {}
       return {
         ...state,
         skuSelector: {
           ...state.skuSelector,
-          areAllVariationsSelected: action.args.allSelected,
+          areAllVariationsSelected: args.allSelected,
         },
       }
     }
     case 'SKU_SELECTOR_SET_IS_VISIBLE': {
+      const args = action.args || {}
       return {
         ...state,
         skuSelector: {
           ...state.skuSelector,
-          isVisible: action.args.isVisible,
+          isVisible: args.isVisible,
         },
       }
     }
     case 'SET_SELECTED_ITEM': {
+      const args = action.args || {}
       return {
         ...state,
-        selectedItem: action.args.item,
+        selectedItem: args.item,
       }
     }
     case 'SET_ASSEMBLY_OPTIONS': {
-      const { groupId, groupItems, isValid } = action.args
+      const { groupId='', groupItems=[], isValid=false } = action.args || {}
       return {
         ...state,
         assemblyOptions: {
@@ -67,7 +72,7 @@ function reducer(
     }
 
     case 'SET_PRODUCT': {
-      const args = action.args
+      const args = action.args || {}
       const differentSlug =
         path(['product', 'linkText'], state) !==
         path(['product', 'linkText'], args)
