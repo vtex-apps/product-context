@@ -4,6 +4,8 @@ import { render } from '@vtex/test-tools/react'
 import { getProduct, getItem } from '../__mocks__/productMock'
 import ProductContextProvider from '../ProductContextProvider'
 import ProductContext from '../ProductContext'
+import ProductDispatchContext from '../ProductDispatchContext'
+const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
   const { selectedItem, product, selectedQuantity } = useContext(ProductContext) as any
@@ -132,5 +134,24 @@ describe('ProductContextProvider component', () => {
 
     getSelectedItemId(itemtwo)
     getSelectedItemName(itemtwo)
+  })
+
+  it('should dispatch action with bad args and not break anything', () => {
+    const BadComponent = () => {
+      const dispatch = useProductDispatch()
+      dispatch && dispatch({ type: 'SET_QUANTITY', quantity: 1 } as any)
+      dispatch && dispatch({ type: 'SKU_SELECTOR_SET_VARIATIONS_SELECTED', quantity: 1 } as any)
+      dispatch && dispatch({ type: 'SKU_SELECTOR_SET_IS_VISIBLE', quantity: 1 } as any)
+      dispatch && dispatch({ type: 'SET_SELECTED_ITEM', quantity: 1 } as any)
+      dispatch && dispatch({ type: 'SET_ASSEMBLY_OPTIONS', quantity: 1 } as any)
+      dispatch && dispatch({ type: 'SET_PRODUCT', quantity: 1 } as any)
+      return <div>Bad Component rendered OK</div>
+    }
+    const { getByText } = render(
+      <ProductContextProvider {...getProps({})}>
+        <BadComponent />
+      </ProductContextProvider>
+    )
+    getByText('Bad Component rendered OK')
   })
 })
