@@ -19,12 +19,13 @@ function reducer(
   action: Actions
 ): ProductContextState {
   switch (action.type) {
-    case 'SET_QUANTITY':
+    case 'SET_QUANTITY': {
       const args = action.args || {}
       return {
         ...state,
         selectedQuantity: args.quantity,
       }
+    }
     case 'SKU_SELECTOR_SET_VARIATIONS_SELECTED': {
       const args = action.args || {}
       return {
