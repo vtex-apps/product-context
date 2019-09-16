@@ -1,12 +1,39 @@
 {
   "compilerOptions": {
-    "noImplicitAny": false,
+    "alwaysStrict": true,
     "esModuleInterop": true,
-    "module": "commonjs",
-    "target": "esnext",
     "jsx": "react",
-    "lib": ["dom", "es7"],
-    "experimentalDecorators": true
+    "lib": [
+      "es2017",
+      "dom",
+      "es2018.promise"
+    ],
+    "module": "es6",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "target": "es2017",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
-  "lib": ["dom", "es7"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "./typings/*.d.ts",
+    "./**/*.tsx",
+    "./**/*.ts"
+  ],
+  "typeAcquisition": {
+    "enable": false
+  }
 }
