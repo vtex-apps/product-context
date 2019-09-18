@@ -10,6 +10,7 @@ const defaultState = {
   },
   assemblyOptions: {
     items: {},
+    inputValues: {},
     areGroupsValid: {},
   },
 }
@@ -26,6 +27,7 @@ function reducer(
         selectedQuantity: args.quantity,
       }
     }
+
     case 'SKU_SELECTOR_SET_VARIATIONS_SELECTED': {
       const args = action.args || {}
       return {
@@ -36,6 +38,7 @@ function reducer(
         },
       }
     }
+
     case 'SKU_SELECTOR_SET_IS_VISIBLE': {
       const args = action.args || {}
       return {
@@ -46,6 +49,7 @@ function reducer(
         },
       }
     }
+
     case 'SET_SELECTED_ITEM': {
       const args = action.args || {}
       return {
@@ -53,12 +57,23 @@ function reducer(
         selectedItem: args.item,
       }
     }
+
     case 'SET_ASSEMBLY_OPTIONS': {
-      const { groupId='', groupItems=[], isValid=false } = action.args || {}
+      const {
+        groupId = '',
+        groupItems = [],
+        groupInputValues = {},
+        isValid = false
+      } = action.args || {}
+
       return {
         ...state,
         assemblyOptions: {
           ...state.assemblyOptions,
+          inputValues: {
+            ...state.assemblyOptions.inputValues,
+            [groupId]: groupInputValues,
+          },
           items: {
             ...state.assemblyOptions.items,
             [groupId]: groupItems,
@@ -76,6 +91,7 @@ function reducer(
       const differentSlug =
         path(['product', 'linkText'], state) !==
         path(['product', 'linkText'], args)
+
       return {
         ...state,
         product: args.product,

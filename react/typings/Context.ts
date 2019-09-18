@@ -5,6 +5,8 @@ interface ProductAndQuery {
   product: MaybeProduct
 }
 
+type GroupId = string
+
 interface AssemblyOptionItem {
   id: string
   quantity: number
@@ -25,10 +27,13 @@ interface ProductContextState {
     areAllVariationsSelected: boolean
   }
   assemblyOptions: {
-    items: Record<string, AssemblyOptionItem[]>
-    areGroupsValid: Record<string, boolean>
+    items: Record<GroupId, AssemblyOptionItem[]>
+    inputValues: Record<GroupId, InputValues>
+    areGroupsValid: Record<GroupId, boolean>
   }
 }
+
+type InputValues = Record<string, string>
 
 type Actions =
   | Action<'SET_QUANTITY', { args: { quantity: number } }>
@@ -44,6 +49,7 @@ type Actions =
         args: {
           groupId: string
           groupItems: AssemblyOptionItem[]
+          groupInputValues: InputValues
           isValid: boolean
         }
       }
