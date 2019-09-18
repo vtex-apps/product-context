@@ -21,7 +21,7 @@ const ProductPageMock = () => {
 }
 
 describe('ProductContextProvider component', () => {
-  const getProps = customProps => {
+  const getProps = (customProps: Partial<ProductAndQuery>): ProductAndQuery => {
     const product = getProduct()
     const props = {
       product,
@@ -30,20 +30,23 @@ describe('ProductContextProvider component', () => {
     }
     return props
   }
-  const renderComponent = (customProps?: any) => {
+
+  const renderComponent = (customProps: Partial<ProductAndQuery> = {}) => {
     const component = render(
       <ProductContextProvider {...getProps(customProps)}>
         <ProductPageMock />
       </ProductContextProvider>
     )
+
     const { getByText, rerender } = component
+
     return {
       ...component,
       testNoProduct: () => getByText('no product'),
-      getSelectedItemId: item => getByText(`Selected Item id: ${item.itemId}`),
-      getSelectedItemName: item =>
+      getSelectedItemId: (item: { itemId: string }) => getByText(`Selected Item id: ${item.itemId}`),
+      getSelectedItemName: (item: { name: string }) =>
         getByText(`Selected Item name: ${item.name}`),
-      getProductSlug: product => getByText(`product slug: ${product.linkText}`),
+      getProductSlug: (product: { linkText: string }) => getByText(`product slug: ${product.linkText}`),
       rerender: (newProps: any) => rerender(<ProductContextProvider {...newProps}>
         <ProductPageMock />
       </ProductContextProvider>)
@@ -57,11 +60,13 @@ describe('ProductContextProvider component', () => {
   })
 
   it('should render with no product and then switch', () => {
-
     const { getProductSlug, rerender, testNoProduct } = renderComponent({ product: undefined })
+
     testNoProduct()
+
     const product = getProduct()
     rerender({ product, query: {} })
+
     getProductSlug(product)
   })
 
@@ -147,11 +152,13 @@ describe('ProductContextProvider component', () => {
       dispatch && dispatch({ type: 'SET_PRODUCT', quantity: 1 } as any)
       return <div>Bad Component rendered OK</div>
     }
+
     const { getByText } = render(
       <ProductContextProvider {...getProps({})}>
         <BadComponent />
       </ProductContextProvider>
     )
+
     getByText('Bad Component rendered OK')
   })
 })

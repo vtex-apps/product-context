@@ -1,12 +1,16 @@
-export const getProduct = (customFields = {}) => {
+export const getProduct = (customFields = {}): Product => {
   return {
     cacheId: 'product-slug',
     productName: 'Product Name',
     productId: '1',
     description: 'Product Description',
     titleTag: 'Product Name',
-    metaTagDescription: null,
+    metaTagDescription: '',
     linkText: 'product-slug',
+    productReference: '',
+    brandId: '',
+    properties: [],
+    specificationGroups: [],
     categories: [
       '/Category A/',
       '/Category A/Category B/',
@@ -22,9 +26,18 @@ export const getProduct = (customFields = {}) => {
     ],
     items: [
       {
+        complementName: '',
+        ean: '',
+        referenceId: [],
+        measurementUnit: 'un',
         itemId: '1',
         name: 'Item One',
         nameComplete: 'Name One Complete',
+        unitMultiplier: 1,
+        videos: [],
+        variations: [],
+        productClusters: [],
+        clusterHighlights: [],
         images: [
           {
             imageId: '1',
@@ -38,7 +51,16 @@ export const getProduct = (customFields = {}) => {
           {
             sellerId: '1',
             sellerName: 'Store Name',
+            addToCartLink: '',
+            sellerDefault: '',
             commertialOffer: {
+              discountHighlights: [],
+              teasers: [],
+              PriceValidUntil: '',
+              PriceWithoutDiscount: 90,
+              Tax: 0,
+              CacheVersionUsedToCallCheckout: '',
+              RewardValue: 0,
               AvailableQuantity: 10,
               ListPrice: 100,
               Price: 90,

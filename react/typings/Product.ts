@@ -12,6 +12,7 @@ interface Product {
   linkText: string
   productReference: string
   categoryId: string
+  categoriesIds: string[]
   categories: string[]
   categoryTree: {
     id: string
