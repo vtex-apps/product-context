@@ -95,8 +95,8 @@ function reducer(
 
       return {
         ...state,
-        product: args.product,
         ...(differentSlug ? defaultState : {}),
+        product: args.product,
       }
     }
     default:
