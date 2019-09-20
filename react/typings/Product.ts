@@ -33,6 +33,10 @@ interface Product {
     }[]
   }[]
   items: Item[]
+  itemMetadata: {
+    items: ItemMetadata[]
+    priceTable: any[]
+  }
 }
 
 interface Item {
@@ -104,6 +108,8 @@ interface ItemMetadata {
     assemblyOptions: {
       id: string
       name: string
+      required: boolean
+      inputValues: InputValue[]
       composition: Composition | null
     }
   }[]
@@ -115,6 +121,38 @@ interface ItemMetadata {
       price: number | null
     }[]
   }[]
+}
+
+type InputValue = TextInputValue | BooleanInputValue | OptionsInputValue
+
+enum InputValueType {
+  'TEXT' = 'TEXT',
+  'BOOLEAN' = 'BOOLEAN',
+  'OPTIONS' = 'OPTIONS',
+}
+
+interface TextInputValue {
+  type: InputValueType.TEXT
+  defaultValue: ''
+  label: string
+  maxLength: number
+  domain: null
+}
+
+interface BooleanInputValue {
+  type: InputValueType.BOOLEAN
+  defaultValue: boolean
+  label: string
+  maxLength: null
+  domain: null
+}
+
+interface OptionsInputValue {
+  type: InputValueType.OPTIONS
+  defaultValue: string
+  label: string
+  maxLength: null
+  domain: string[]
 }
 
 interface Composition {

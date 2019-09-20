@@ -1,7 +1,8 @@
 import { useReducer } from 'react'
 import { path, find, propEq, compose, flip, gt, pathOr } from 'ramda'
 
-const defaultState = {
+const defaultState: ProductContextState = {
+  product: undefined,
   selectedItem: null,
   selectedQuantity: 1,
   skuSelector: {
