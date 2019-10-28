@@ -14,5 +14,6 @@
     "prettier": "^1.16.4",
     "typescript": "3.5.2",
     "vtex.render-runtime": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.render-runtime@8.62.2/public/_types/react"
-  }
+  },
+  "version": "0.3.2"
 }
