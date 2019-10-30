@@ -9,6 +9,9 @@ const defaultState: ProductContextState = {
     isVisible: false,
     areAllVariationsSelected: true,
   },
+  buyButton: {
+    clicked: false,
+  },
   assemblyOptions: {
     items: {},
     inputValues: {},
@@ -36,6 +39,17 @@ function reducer(
         skuSelector: {
           ...state.skuSelector,
           areAllVariationsSelected: args.allSelected,
+        },
+      }
+    }
+
+    case 'SET_BUY_BUTTON_CLICKED': {
+      const args = action.args || {}
+      return {
+        ...state,
+        buyButton: {
+          ...state.buyButton,
+          clicked: args.clicked
         },
       }
     }
