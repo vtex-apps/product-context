@@ -18,6 +18,10 @@ interface AssemblyOptionItem {
   children: Record<string, AssemblyOptionItem[]> | null
 }
 
+interface BuyButtonContextState {
+  clicked: boolean
+}
+
 interface ProductContextState {
   selectedItem?: Item | null
   product: MaybeProduct
@@ -26,6 +30,7 @@ interface ProductContextState {
     isVisible: boolean
     areAllVariationsSelected: boolean
   }
+  buyButton: BuyButtonContextState
   assemblyOptions: {
     items: Record<GroupId, AssemblyOptionItem[]>
     inputValues: Record<GroupId, InputValues>
@@ -41,6 +46,7 @@ type Actions =
       'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
       { args: { allSelected: boolean } }
     >
+  | Action<'SET_BUY_BUTTON_CLICKED', { args: { clicked: boolean } }>
   | Action<'SKU_SELECTOR_SET_IS_VISIBLE', { args: { isVisible: boolean } }>
   | Action<'SET_SELECTED_ITEM', { args: { item: Item | undefined | null } }>
   | Action<
