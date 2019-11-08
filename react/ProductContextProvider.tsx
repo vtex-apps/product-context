@@ -2,6 +2,7 @@ import React, { FC, useEffect, Dispatch } from 'react'
 import ProductContext from './ProductContext'
 import { ProductDispatchContext } from './ProductDispatchContext'
 import { useProductReducer, getSelectedItem } from './reducer'
+import { getSelectedSKUFromQueryString } from './modules/skuQueryString'
 
 function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
   useEffect(() => {
@@ -30,7 +31,8 @@ const ProductContextProvider: FC<ProductAndQuery> = ({ query, product, children 
 
   // These hooks are used to keep the state in sync with API data, specially when switching between products without exiting the product page
   useProductInState(product, dispatch)
-  useSelectedItemFromId(query.skuId, dispatch, product)
+  const selectedSkuQueryString = getSelectedSKUFromQueryString(query)
+  useSelectedItemFromId(selectedSkuQueryString, dispatch, product)
 
   return (
     <ProductContext.Provider value={state}>
