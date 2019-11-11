@@ -1,5 +1,6 @@
 import { useReducer } from 'react'
 import { path, find, propEq, compose, flip, gt, pathOr } from 'ramda'
+import { getSelectedSKUFromQueryString } from '../modules/skuQueryString'
 
 const defaultState: ProductContextState = {
   product: undefined,
@@ -138,7 +139,7 @@ function initReducer({ query, product }: ProductAndQuery) {
   const items = (product && product.items) || []
   return {
     ...defaultState,
-    selectedItem: getSelectedItem(query.skuId, items),
+    selectedItem: getSelectedItem(getSelectedSKUFromQueryString(query), items),
     product,
   }
 }
