@@ -50,7 +50,7 @@ function reducer(
         ...state,
         buyButton: {
           ...state.buyButton,
-          clicked: args.clicked
+          clicked: args.clicked,
         },
       }
     }
@@ -79,7 +79,7 @@ function reducer(
         groupId = '',
         groupItems = [],
         groupInputValues = {},
-        isValid = false
+        isValid = false,
       } = action.args || {}
 
       return {
