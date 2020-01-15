@@ -33,6 +33,7 @@ interface Product {
     }[]
   }[]
   items: Item[]
+  skuSpecifications: SkuSpecification[]
   itemMetadata: {
     items: ItemMetadata[]
     priceTable: any[]
@@ -74,6 +75,19 @@ interface Item {
     id: string
     name: string
   }[]
+}
+
+interface SkuSpecification {
+  field: SkuSpecificationField
+  values: SkuSpecificationValues[]
+}
+
+interface SkuSpecificationField {
+  name: string
+}
+
+interface SkuSpecificationValues {
+  name: string
 }
 
 interface Seller {
