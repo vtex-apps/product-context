@@ -27,6 +27,7 @@ interface ProductContextState {
   product: MaybeProduct
   selectedQuantity: number
   skuSelector: {
+    selectedImageVariationSKU: string | null
     isVisible: boolean
     areAllVariationsSelected: boolean
   }
@@ -41,6 +42,10 @@ interface ProductContextState {
 type InputValues = Record<string, string>
 
 type Actions =
+  | Action<
+      'SELECT_IMAGE_VARIATION',
+      { args: { selectedImageVariationSKU: string | null } }
+    >
   | Action<'SET_QUANTITY', { args: { quantity: number } }>
   | Action<
       'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
