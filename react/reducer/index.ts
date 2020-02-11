@@ -7,6 +7,7 @@ const defaultState: ProductContextState = {
   selectedItem: null,
   selectedQuantity: 1,
   skuSelector: {
+    selectedImageVariationSKU: null,
     isVisible: false,
     areAllVariationsSelected: true,
   },
@@ -30,6 +31,17 @@ function reducer(
       return {
         ...state,
         selectedQuantity: args.quantity,
+      }
+    }
+
+    case 'SELECT_IMAGE_VARIATION': {
+      const args = action.args || {}
+      return {
+        ...state,
+        skuSelector: {
+          ...state.skuSelector,
+          selectedImageVariationSKU: args.selectedImageVariationSKU,
+        },
       }
     }
 
