@@ -110,6 +110,7 @@ interface Seller {
     AvailableQuantity: number
     Tax: number
     CacheVersionUsedToCallCheckout: string
+    giftSkuIds: string[]
   }
 }
 
