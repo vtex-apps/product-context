@@ -1,5 +1,12 @@
 import { useReducer } from 'react'
-import { path, find, propEq, compose, flip, gt, pathOr } from 'ramda'
+import path from 'ramda/es/path'
+import find from 'ramda/es/find'
+import propEq from 'ramda/es/propEq'
+import compose from 'ramda/es/compose'
+import flip from 'ramda/es/flip'
+import gt from 'ramda/es/gt'
+import pathOr from 'ramda/es/pathOr'
+
 import { getSelectedSKUFromQueryString } from '../modules/skuQueryString'
 
 const defaultState: ProductContextState = {
@@ -27,7 +34,7 @@ function reducer(
 ): ProductContextState {
   switch (action.type) {
     case 'SET_QUANTITY': {
-      const args = action.args || {}
+      const args = action.args || { quantity: undefined }
       return {
         ...state,
         selectedQuantity: args.quantity,
@@ -35,7 +42,7 @@ function reducer(
     }
 
     case 'SELECT_IMAGE_VARIATION': {
-      const args = action.args || {}
+      const args = action.args || { selectedImageVariationSKU: undefined }
       return {
         ...state,
         skuSelector: {
@@ -46,7 +53,7 @@ function reducer(
     }
 
     case 'SKU_SELECTOR_SET_VARIATIONS_SELECTED': {
-      const args = action.args || {}
+      const args = action.args || { allSelected: undefined }
       return {
         ...state,
         skuSelector: {
@@ -57,7 +64,7 @@ function reducer(
     }
 
     case 'SET_BUY_BUTTON_CLICKED': {
-      const args = action.args || {}
+      const args = action.args || { clicked: undefined }
       return {
         ...state,
         buyButton: {
@@ -68,7 +75,7 @@ function reducer(
     }
 
     case 'SKU_SELECTOR_SET_IS_VISIBLE': {
-      const args = action.args || {}
+      const args = action.args || { isVisible: undefined }
       return {
         ...state,
         skuSelector: {
@@ -79,7 +86,7 @@ function reducer(
     }
 
     case 'SET_SELECTED_ITEM': {
-      const args = action.args || {}
+      const args = action.args || { item: undefined }
       return {
         ...state,
         selectedItem: args.item,
@@ -115,7 +122,7 @@ function reducer(
     }
 
     case 'SET_PRODUCT': {
-      const args = action.args || {}
+      const args = action.args || { product: undefined }
       const differentSlug =
         path(['product', 'linkText'], state) !==
         path(['product', 'linkText'], args)
@@ -136,7 +143,7 @@ const isSkuAvailable = compose<Seller, number, boolean>(
   pathOr(0, ['commertialOffer', 'AvailableQuantity'])
 )
 
-const findItemById = (id: string) => find<Item>(propEq<string>('itemId', id))
+const findItemById = (id: string) => find<Item>(propEq('itemId', id))
 function findAvailableProduct(item: Item) {
   return item.sellers.find(isSkuAvailable)
 }
@@ -148,7 +155,7 @@ export function getSelectedItem(skuId: string | undefined, items: Item[]) {
 }
 
 function initReducer({ query, product }: ProductAndQuery) {
-  const items = (product && product.items) || []
+  const items = product?.items || []
   return {
     ...defaultState,
     selectedItem: getSelectedItem(getSelectedSKUFromQueryString(query), items),

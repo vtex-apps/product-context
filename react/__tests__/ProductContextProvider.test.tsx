@@ -1,20 +1,28 @@
 /* eslint-env jest */
 import React, { useContext } from 'react'
 import { render } from '@vtex/test-tools/react'
+
 import { getProduct, getItem } from '../__mocks__/productMock'
 import ProductContextProvider from '../ProductContextProvider'
 import ProductContext from '../ProductContext'
 import ProductDispatchContext from '../ProductDispatchContext'
+
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(ProductContext) as any
+  const { selectedItem, product, selectedQuantity } = useContext(
+    ProductContext
+  ) as any
   return (
     <div>
       <div>Product Page</div>
-      <div>Selected Item id: {selectedItem && selectedItem.itemId}</div>
-      <div>Selected Item name: {selectedItem && selectedItem.name}</div>
-      {product ? <div>product slug: {product && product.linkText}</div> : <div>no product</div>}
+      <div>Selected Item id: {selectedItem?.itemId}</div>
+      <div>Selected Item name: {selectedItem?.name}</div>
+      {product ? (
+        <div>product slug: {product?.linkText}</div>
+      ) : (
+        <div>no product</div>
+      )}
       <div>Selected Quantity: {selectedQuantity}</div>
     </div>
   )
@@ -43,13 +51,18 @@ describe('ProductContextProvider component', () => {
     return {
       ...component,
       testNoProduct: () => getByText('no product'),
-      getSelectedItemId: (item: { itemId: string }) => getByText(`Selected Item id: ${item.itemId}`),
+      getSelectedItemId: (item: { itemId: string }) =>
+        getByText(`Selected Item id: ${item.itemId}`),
       getSelectedItemName: (item: { name: string }) =>
         getByText(`Selected Item name: ${item.name}`),
-      getProductSlug: (product: { linkText: string }) => getByText(`product slug: ${product.linkText}`),
-      rerender: (newProps: any) => rerender(<ProductContextProvider {...newProps}>
-        <ProductPageMock />
-      </ProductContextProvider>)
+      getProductSlug: (product: { linkText: string }) =>
+        getByText(`product slug: ${product.linkText}`),
+      rerender: (newProps: any) =>
+        rerender(
+          <ProductContextProvider {...newProps}>
+            <ProductPageMock />
+          </ProductContextProvider>
+        ),
     }
   }
 
@@ -60,7 +73,9 @@ describe('ProductContextProvider component', () => {
   })
 
   it('should render with no product and then switch', () => {
-    const { getProductSlug, rerender, testNoProduct } = renderComponent({ product: undefined })
+    const { getProductSlug, rerender, testNoProduct } = renderComponent({
+      product: undefined,
+    })
 
     testNoProduct()
 
@@ -144,12 +159,15 @@ describe('ProductContextProvider component', () => {
   it('should dispatch action with bad args and not break anything', () => {
     const BadComponent = () => {
       const dispatch = useProductDispatch()
-      dispatch && dispatch({ type: 'SET_QUANTITY', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SKU_SELECTOR_SET_VARIATIONS_SELECTED', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SKU_SELECTOR_SET_IS_VISIBLE', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SET_SELECTED_ITEM', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SET_ASSEMBLY_OPTIONS', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SET_PRODUCT', quantity: 1 } as any)
+      dispatch?.({ type: 'SET_QUANTITY', quantity: 1 } as any)
+      dispatch?.({
+        type: 'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
+        quantity: 1,
+      } as any)
+      dispatch?.({ type: 'SKU_SELECTOR_SET_IS_VISIBLE', quantity: 1 } as any)
+      dispatch?.({ type: 'SET_SELECTED_ITEM', quantity: 1 } as any)
+      dispatch?.({ type: 'SET_ASSEMBLY_OPTIONS', quantity: 1 } as any)
+      dispatch?.({ type: 'SET_PRODUCT', quantity: 1 } as any)
       return <div>Bad Component rendered OK</div>
     }
 

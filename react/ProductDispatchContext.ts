@@ -6,4 +6,5 @@ export const ProductDispatchContext = createContext<Dispatch<Actions> | null>(
 function useProductDispatch() {
   return useContext(ProductDispatchContext)
 }
+
 export default { ProductDispatchContext, useProductDispatch }

@@ -14,24 +14,24 @@ interface Product {
   categoryId: string
   categoriesIds: string[]
   categories: string[]
-  categoryTree: {
+  categoryTree: Array<{
     id: string
     name: string
     href: string
-  }[]
+  }>
   brand: string
   brandId: string
-  properties: {
+  properties: Array<{
     name: string
     values: string
-  }[]
-  specificationGroups: {
+  }>
+  specificationGroups: Array<{
     name: string
-    specifications: {
+    specifications: Array<{
       name: string
       values: string[]
-    }[]
-  }[]
+    }>
+  }>
   items: Item[]
   skuSpecifications: SkuSpecification[]
   itemMetadata: {
@@ -46,35 +46,35 @@ interface Item {
   nameComplete: string
   complementName: string
   ean: string
-  referenceId: {
+  referenceId: Array<{
     Key: string
     Value: string
-  }[]
+  }>
   measurementUnit: string
   unitMultiplier: number
-  images: {
+  images: Array<{
     imageId: string
     imageLabel: string
     imageTag: string
     imageUrl: string
     imageText: string
-  }[]
-  videos: {
+  }>
+  videos: Array<{
     videoUrl: string
-  }[]
+  }>
   sellers: Seller[]
-  variations: {
+  variations: Array<{
     name: string
     values: string[]
-  }[]
-  productClusters: {
+  }>
+  productClusters: Array<{
     id: string
     name: string
-  }[]
-  clusterHighlights: {
+  }>
+  clusterHighlights: Array<{
     id: string
     name: string
-  }[]
+  }>
 }
 
 interface SkuSpecification {
@@ -96,12 +96,12 @@ interface Seller {
   addToCartLink: string
   sellerDefault: string
   commertialOffer: {
-    discountHighlights: {
+    discountHighlights: Array<{
       name: string
-    }[]
-    teasers: {
+    }>
+    teasers: Array<{
       name: string
-    }[]
+    }>
     Price: number
     ListPrice: number
     PriceWithoutDiscount: number
@@ -114,7 +114,7 @@ interface Seller {
 }
 
 interface ItemMetadata {
-  items: {
+  items: Array<{
     id: string
     name: string
     imageUrl: string
@@ -126,15 +126,15 @@ interface ItemMetadata {
       inputValues: InputValue[]
       composition: Composition | null
     }
-  }[]
-  priceTable: {
+  }>
+  priceTable: Array<{
     type: string
-    values: {
+    values: Array<{
       id: string
       assemblyId: string
       price: number | null
-    }[]
-  }[]
+    }>
+  }>
 }
 
 type InputValue = TextInputValue | BooleanInputValue | OptionsInputValue
@@ -172,12 +172,12 @@ interface OptionsInputValue {
 interface Composition {
   minQuantity: number
   maxQuantity: number
-  items: {
+  items: Array<{
     id: string
     minQuantity: number
     maxQuantity: number
     priceTable: string
     seller: string
     initialQuantity: number
-  }[]
+  }>
 }

@@ -4,4 +4,5 @@ interface QueryParams {
 }
 
 // `idsku` querystring is to keep compatibility with Google Shopping integration
-export const getSelectedSKUFromQueryString = (query: QueryParams) => query.skuId || query.idsku
+export const getSelectedSKUFromQueryString = (query: QueryParams) =>
+  query.skuId || query.idsku
