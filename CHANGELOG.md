@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for the `property__VariationName=Variation` query string.
+
 ## [0.7.1] - 2020-02-11
 ### Added
 - `SELECT_IMAGE_VARIATION` action.
