@@ -38,7 +38,10 @@ const ProductContextProvider: FC<ProductAndQuery> = ({
 
   // These hooks are used to keep the state in sync with API data, specially when switching between products without exiting the product page
   useProductInState(product, dispatch)
-  const selectedSkuQueryString = getSelectedSKUFromQueryString(query)
+  const selectedSkuQueryString = getSelectedSKUFromQueryString(
+    query,
+    (product && product.items) || []
+  )
   useSelectedItemFromId(dispatch, product, selectedSkuQueryString)
 
   return (
