@@ -1,4 +1,5 @@
 import React, { FC, useEffect, Dispatch } from 'react'
+
 import ProductContext from './ProductContext'
 import { ProductDispatchContext } from './ProductDispatchContext'
 import { useProductReducer, getSelectedItem } from './reducer'
@@ -21,7 +22,8 @@ function useSelectedItemFromId(
   skuId?: string
 ) {
   useEffect(() => {
-    const items = (product && product.items) || []
+    const items = product?.items ?? []
+
     dispatch({
       type: 'SET_SELECTED_ITEM',
       args: { item: getSelectedItem(skuId, items) },
@@ -40,8 +42,9 @@ const ProductContextProvider: FC<ProductAndQuery> = ({
   useProductInState(product, dispatch)
   const selectedSkuQueryString = getSelectedSKUFromQueryString(
     query,
-    (product && product.items) || []
+    product?.items
   )
+
   useSelectedItemFromId(dispatch, product, selectedSkuQueryString)
 
   return (
