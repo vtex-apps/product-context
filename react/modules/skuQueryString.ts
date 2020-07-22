@@ -1,63 +1,51 @@
+import { itemHasVariation, findAvailableProduct } from './items'
+
 interface QueryParams {
   skuId?: string
   idsku?: string
 }
 
-interface Variation {
-  name: string
-  value: string
-}
-
-const itemHasVariation = (item: Item, variation: Variation) => {
-  const { name, value } = variation
-
-  return Boolean(
-    item.variations.find(
-      variation =>
-        variation.name === name &&
-        variation.values.some(variationValue => variationValue === value)
-    )
-  )
-}
+const QUERY_STRING_VARIANT_PREFIX = 'property__'
 
 // `idsku` querystring is to keep compatibility with Google Shopping integration
 export const getSelectedSKUFromQueryString = (
   query: QueryParams,
-  items: Item[]
+  items: Item[] = []
 ) => {
-  const skuId = query.skuId || query.idsku
+  const skuId = query.skuId ?? query.idsku
 
   if (skuId) {
     return skuId
   }
 
-  const selectedVariations: Record<string, string> = {}
+  const variantQueryProps = Object.entries(query)
+    .filter(([key]) => key.startsWith(QUERY_STRING_VARIANT_PREFIX))
+    .map(([key, value]) => [
+      key.slice(QUERY_STRING_VARIANT_PREFIX.length),
+      value,
+    ])
 
-  const propertyRegex = /^property__(.*)/
-
-  Object.entries(query).forEach(keyValue => {
-    const [key, value] = keyValue
-
-    const match = propertyRegex.exec(key)
-
-    if (!match) {
-      return
-    }
-
-    const [, variationName] = match
-    selectedVariations[variationName] = value
-  })
-
-  if (Object.entries(selectedVariations).length === 0) {
+  if (variantQueryProps.length === 0) {
     return
   }
 
-  const selectedItem = items.find(item =>
-    Object.entries(selectedVariations).every(selectedVariation => {
-      const [name, value] = selectedVariation
+  const itemsWithVariation = items.filter(item =>
+    variantQueryProps.every(([name, value]) => {
       return itemHasVariation(item, { name, value })
     })
   )
 
-  return selectedItem && selectedItem.itemId
+  if (itemsWithVariation.length === 0) {
+    return
+  }
+
+  const availableItem = itemsWithVariation.find(item =>
+    findAvailableProduct(item)
+  )
+
+  if (availableItem) {
+    return availableItem.itemId
+  }
+
+  return itemsWithVariation[0].itemId
 }
