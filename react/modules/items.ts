@@ -6,15 +6,13 @@ export function findAvailableProduct(item: Item) {
 
 export function itemHasVariation(
   item: Item,
-  variation: { name: string; value: string }
+  { name, value }: { name: string; value: string }
 ) {
-  const { name, value } = variation
-
   return Boolean(
     item.variations.find(
-      v =>
-        v.name === name &&
-        v.values.some(variationValue => variationValue === value)
+      variation =>
+        variation.name === name &&
+        variation.values.some(variationValue => variationValue === value)
     )
   )
 }

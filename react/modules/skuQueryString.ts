@@ -35,13 +35,17 @@ export const getSelectedSKUFromQueryString = (
     })
   )
 
+  if (itemsWithVariation.length === 0) {
+    return
+  }
+
   const availableItem = itemsWithVariation.find(item =>
     findAvailableProduct(item)
   )
 
   if (availableItem) {
-    return availableItem?.itemId
+    return availableItem.itemId
   }
 
-  return itemsWithVariation[0]?.itemId
+  return itemsWithVariation[0].itemId
 }
