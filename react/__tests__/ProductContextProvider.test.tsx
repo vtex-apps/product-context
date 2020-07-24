@@ -8,13 +8,19 @@ import ProductDispatchContext from '../ProductDispatchContext'
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(ProductContext) as any
+  const { selectedItem, product, selectedQuantity } = useContext(
+    ProductContext
+  ) as any
   return (
     <div>
       <div>Product Page</div>
       <div>Selected Item id: {selectedItem && selectedItem.itemId}</div>
       <div>Selected Item name: {selectedItem && selectedItem.name}</div>
-      {product ? <div>product slug: {product && product.linkText}</div> : <div>no product</div>}
+      {product ? (
+        <div>product slug: {product && product.linkText}</div>
+      ) : (
+        <div>no product</div>
+      )}
       <div>Selected Quantity: {selectedQuantity}</div>
     </div>
   )
@@ -43,13 +49,18 @@ describe('ProductContextProvider component', () => {
     return {
       ...component,
       testNoProduct: () => getByText('no product'),
-      getSelectedItemId: (item: { itemId: string }) => getByText(`Selected Item id: ${item.itemId}`),
+      getSelectedItemId: (item: { itemId: string }) =>
+        getByText(`Selected Item id: ${item.itemId}`),
       getSelectedItemName: (item: { name: string }) =>
         getByText(`Selected Item name: ${item.name}`),
-      getProductSlug: (product: { linkText: string }) => getByText(`product slug: ${product.linkText}`),
-      rerender: (newProps: any) => rerender(<ProductContextProvider {...newProps}>
-        <ProductPageMock />
-      </ProductContextProvider>)
+      getProductSlug: (product: { linkText: string }) =>
+        getByText(`product slug: ${product.linkText}`),
+      rerender: (newProps: any) =>
+        rerender(
+          <ProductContextProvider {...newProps}>
+            <ProductPageMock />
+          </ProductContextProvider>
+        ),
     }
   }
 
@@ -60,7 +71,9 @@ describe('ProductContextProvider component', () => {
   })
 
   it('should render with no product and then switch', () => {
-    const { getProductSlug, rerender, testNoProduct } = renderComponent({ product: undefined })
+    const { getProductSlug, rerender, testNoProduct } = renderComponent({
+      product: undefined,
+    })
 
     testNoProduct()
 
@@ -141,12 +154,102 @@ describe('ProductContextProvider component', () => {
     getSelectedItemName(itemtwo)
   })
 
+  it('should select the first available product with the variation set in propertyName and propertyValue', async () => {
+    const itemOne = getItem('1', 90, 1, {
+      variations: [
+        {
+          name: 'Color',
+          values: ['Blue'],
+        },
+      ],
+    })
+
+    const itemTwo = getItem('2', 90, 0, {
+      variations: [
+        {
+          name: 'Color',
+          values: ['Red'],
+        },
+      ],
+    })
+
+    const itemThree = getItem('3', 90, 1, {
+      variations: [
+        {
+          name: 'Color',
+          values: ['Red'],
+        },
+      ],
+    })
+
+    const newProduct = getProduct({
+      items: [itemOne, itemTwo, itemThree],
+    })
+
+    const props = {
+      product: newProduct,
+      params: { slug: newProduct.linkText },
+      productQuery: {
+        product: newProduct,
+        loading: false,
+      },
+      query: { propertyName: 'Color', propertyValue: 'Red' },
+    }
+    const { getSelectedItemId, getSelectedItemName } = renderComponent(props)
+
+    getSelectedItemId(itemThree)
+    getSelectedItemName(itemThree)
+  })
+
+  it('should select the first available item when there is no item with the variation set in propertyName and propertyValue', async () => {
+    const itemOne = getItem('1', 90, 0, {
+      variations: [
+        {
+          name: 'Color',
+          values: ['Blue'],
+        },
+      ],
+    })
+
+    const itemTwo = getItem('2', 90, 1, {
+      variations: [
+        {
+          name: 'Color',
+          values: ['Red'],
+        },
+      ],
+    })
+
+    const newProduct = getProduct({
+      items: [itemOne, itemTwo],
+    })
+
+    const props = {
+      product: newProduct,
+      params: { slug: newProduct.linkText },
+      productQuery: {
+        product: newProduct,
+        loading: false,
+      },
+      query: { propertyName: 'Color', propertyValue: 'Black' },
+    }
+    const { getSelectedItemId, getSelectedItemName } = renderComponent(props)
+
+    getSelectedItemId(itemTwo)
+    getSelectedItemName(itemTwo)
+  })
+
   it('should dispatch action with bad args and not break anything', () => {
     const BadComponent = () => {
       const dispatch = useProductDispatch()
       dispatch && dispatch({ type: 'SET_QUANTITY', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SKU_SELECTOR_SET_VARIATIONS_SELECTED', quantity: 1 } as any)
-      dispatch && dispatch({ type: 'SKU_SELECTOR_SET_IS_VISIBLE', quantity: 1 } as any)
+      dispatch &&
+        dispatch({
+          type: 'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
+          quantity: 1,
+        } as any)
+      dispatch &&
+        dispatch({ type: 'SKU_SELECTOR_SET_IS_VISIBLE', quantity: 1 } as any)
       dispatch && dispatch({ type: 'SET_SELECTED_ITEM', quantity: 1 } as any)
       dispatch && dispatch({ type: 'SET_ASSEMBLY_OPTIONS', quantity: 1 } as any)
       dispatch && dispatch({ type: 'SET_PRODUCT', quantity: 1 } as any)

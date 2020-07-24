@@ -137,7 +137,7 @@ const isSkuAvailable = compose<Seller, number, boolean>(
 )
 
 const findItemById = (id: string) => find<Item>(propEq<string>('itemId', id))
-function findAvailableProduct(item: Item) {
+export function findAvailableProduct(item: Item) {
   return item.sellers.find(isSkuAvailable)
 }
 

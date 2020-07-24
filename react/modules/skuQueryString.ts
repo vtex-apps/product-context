@@ -1,6 +1,11 @@
+import { findAvailableProduct } from '../reducer'
+import { zipObj } from 'ramda'
+
 interface QueryParams {
   skuId?: string
   idsku?: string
+  propertyName?: string
+  propertyValue?: string
 }
 
 interface Variation {
@@ -31,31 +36,27 @@ export const getSelectedSKUFromQueryString = (
     return skuId
   }
 
-  const selectedVariations: Record<string, string> = {}
+  if (!query.propertyName || !query.propertyValue) {
+    return
+  }
 
-  const propertyRegex = /^property__(.*)/
+  const names = query.propertyName.split(',')
+  const values = query.propertyValue.split(',')
+  const selectedVariations = zipObj(names, values)
 
-  Object.entries(query).forEach(keyValue => {
-    const [key, value] = keyValue
+  const selectedVariationEntries = Object.entries(selectedVariations)
 
-    const match = propertyRegex.exec(key)
-
-    if (!match) {
-      return
-    }
-
-    const [, variationName] = match
-    selectedVariations[variationName] = value
-  })
-
-  if (Object.entries(selectedVariations).length === 0) {
+  if (selectedVariationEntries.length === 0) {
     return
   }
 
   const selectedItem = items.find(item =>
-    Object.entries(selectedVariations).every(selectedVariation => {
+    selectedVariationEntries.every(selectedVariation => {
       const [name, value] = selectedVariation
-      return itemHasVariation(item, { name, value })
+      return (
+        Boolean(findAvailableProduct(item)) &&
+        itemHasVariation(item, { name, value })
+      )
     })
   )
 
