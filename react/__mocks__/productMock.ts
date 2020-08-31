@@ -1,4 +1,6 @@
-export const getProduct = (customFields = {}): Product => {
+import { Product } from '../ProductTypes'
+
+export const getProduct = (customFields = {}): Partial<Product> => {
   return {
     cacheId: 'product-slug',
     productName: 'Product Name',

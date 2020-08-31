@@ -2,6 +2,12 @@ import { useReducer } from 'react'
 
 import { getSelectedSKUFromQueryString } from '../modules/skuQueryString'
 import { findAvailableProduct } from '../modules/items'
+import { Item } from '../ProductTypes'
+import {
+  ProductContextState,
+  Actions,
+  ProductAndQuery,
+} from '../ProductContextProvider'
 
 const defaultState: ProductContextState = {
   product: undefined,

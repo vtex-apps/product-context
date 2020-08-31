@@ -1,8 +1,8 @@
 type Maybe<T> = T | null | undefined
 
-type MaybeProduct = Maybe<Product>
+export type MaybeProduct = Maybe<Product>
 
-interface Product {
+export interface Product {
   cacheId: string
   productName: string
   productId: string
@@ -40,7 +40,7 @@ interface Product {
   }
 }
 
-interface Item {
+export interface Item {
   itemId: string
   name: string
   nameComplete: string
@@ -77,7 +77,7 @@ interface Item {
   }>
 }
 
-interface SkuSpecification {
+export interface SkuSpecification {
   field: SkuSpecificationField
   values: SkuSpecificationValues[]
 }
@@ -90,7 +90,7 @@ interface SkuSpecificationValues {
   name: string
 }
 
-interface Seller {
+export interface Seller {
   sellerId: string
   sellerName: string
   addToCartLink: string
@@ -113,7 +113,7 @@ interface Seller {
   }
 }
 
-interface ItemMetadata {
+export interface ItemMetadata {
   items: Array<{
     id: string
     name: string

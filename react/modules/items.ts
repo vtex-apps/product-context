@@ -1,3 +1,5 @@
+import { Item, Seller } from '../ProductTypes'
+
 export function findAvailableProduct(item: Item) {
   return item.sellers.find((seller: Seller) => {
     return seller?.commertialOffer?.AvailableQuantity > 0

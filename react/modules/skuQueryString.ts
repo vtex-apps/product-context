@@ -1,4 +1,5 @@
 import { itemHasVariation, findAvailableProduct } from './items'
+import { Item } from '../ProductTypes'
 
 interface QueryParams {
   skuId?: string
