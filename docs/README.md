@@ -74,7 +74,7 @@ interface ProductContextState {
 
 you should expect an object that looks like that as the return value of `useProduct`. Just be aware that, if the hook is called **outside** of a `ProductContextProvider`, the return value could be `undefined` or an empty object.
 
-:info: To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
+ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
 
 ### `ProductContextProvider`
 
