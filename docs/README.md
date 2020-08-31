@@ -32,7 +32,7 @@ const MyComponent: FC = () => {
   return (
     <Fragment>
       {productContextValue?.product?.productName}
-    </div>
+    </Fragment>
   )
 }
 
