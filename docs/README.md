@@ -8,7 +8,7 @@
 
 The Product Context app is responsible for exposing data regarding a certain product to all of it's children.
 
-## Usage
+## Usage example
 
 To use this app, be sure to add it to you app's `manifest.json` file:
 
@@ -40,6 +40,45 @@ export default MyComponent
 ```
 
 :warning: Be sure to run `vtex setup` in your project to install the correct TypeScript types exported by this app.
+
+## API
+
+### `ProductContext`
+
+The `ProductContext` entry point exports the React context in it's raw form. This is only useful if you want to reference it directly.
+
+Be aware that most of the times, what you're looking for is the `useProduct` hook described below.
+
+### `useProduct`
+
+This is the most useful export from this app. The `useProduct` hook can be used to read the data from the nearest `ProductContext` relative to its caller. The `productContextValue` variable from the example in the [Usage Example](#usage-example) example has the following type definition:
+
+```ts
+interface ProductContextState {
+  selectedItem?: Item | null
+  product: MaybeProduct
+  selectedQuantity: number
+  skuSelector: {
+    selectedImageVariationSKU: string | null
+    isVisible: boolean
+    areAllVariationsSelected: boolean
+  }
+  buyButton: BuyButtonContextState
+  assemblyOptions: {
+    items: Record<GroupId, AssemblyOptionItem[]>
+    inputValues: Record<GroupId, InputValues>
+    areGroupsValid: Record<GroupId, boolean>
+  }
+}
+```
+
+you should expect an object that looks like that as the return value of `useProduct`. Just be aware that, if the hook is called **outside** of a `ProductContextProvider`, the return value could be `undefined` or an empty object.
+
+:info: To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
+
+### `ProductContextProvider`
+
+### `ProductDispatchContext`
 
 ## Contributors ✨
 
