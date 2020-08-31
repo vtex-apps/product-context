@@ -78,7 +78,54 @@ you should expect an object that looks like that as the return value of `useProd
 
 ### `ProductContextProvider`
 
+The `ProductContextProvider` component is capable of providing the `ProductContext` to all of it's children. 
+
+It expects to receive the following props:
+
+```ts
+interface ProductAndQuery {
+  query: Record<string, any>
+  product: MaybeProduct
+}
+```
+
+and will also wrap it's children with the `ProductDispatchContext` component described below.
+
 ### `ProductDispatchContext`
+
+The `ProductDispatchContext` entry point exports a React context in it's raw form. This is only useful if you want to reference it directly. Most likely you don't need to use this, since the `ProductContextProvider` already wraps it's children with a provider for this context.
+
+This is the context that exposes functions you can use to manipulate the nearest `ProductContext`. It's value is a `dispatch` function, capable of performing the following `actions`:
+
+```ts
+type Actions =
+  | Action<
+      'SELECT_IMAGE_VARIATION',
+      { args: { selectedImageVariationSKU: string | null } }
+    >
+  | Action<'SET_QUANTITY', { args: { quantity: number } }>
+  | Action<
+      'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
+      { args: { allSelected: boolean } }
+    >
+  | Action<'SET_BUY_BUTTON_CLICKED', { args: { clicked: boolean } }>
+  | Action<'SKU_SELECTOR_SET_IS_VISIBLE', { args: { isVisible: boolean } }>
+  | Action<'SET_SELECTED_ITEM', { args: { item: Item | undefined | null } }>
+  | Action<
+      'SET_ASSEMBLY_OPTIONS',
+      {
+        args: {
+          groupId: string
+          groupItems: AssemblyOptionItem[]
+          groupInputValues: InputValues
+          isValid: boolean
+        }
+      }
+    >
+  | Action<'SET_PRODUCT', { args: { product: MaybeProduct } }>
+```
+
+ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
 
 ## Contributors ✨
 
