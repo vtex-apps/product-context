@@ -77,11 +77,9 @@ The `ProductContext` entry point exports the React context in it's raw form. Thi
 
 Be aware that most of the times, what you're looking for is the `useProduct` hook described below.
 
-### `ProductDispatchContext`
+### `useProductDispatch`
 
-The `ProductDispatchContext` entry point exports a React context in it's raw form. This is only useful if you want to reference it directly. Most likely you don't need to use this, since the `ProductContextProvider` already wraps it's children with a provider for this context.
-
-This is the context that exposes functions you can use to manipulate the nearest `ProductContext`. It's value is a `dispatch` function, capable of performing the following `actions`:
+This hooks returns a `dispatch` function you can use to manipulate the nearest `ProductContext`. This function is capable of performing the following `actions`:
 
 ```ts
 type Actions =
