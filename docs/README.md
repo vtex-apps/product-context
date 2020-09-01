@@ -23,6 +23,7 @@ To use this app, be sure to add it to you app's `manifest.json` file:
 then you can import any of the exported components and hooks from the app. Here's an example of a component that render's the name of the product whose data is stored in the nearest `ProductContext`:
 
 ```tsx
+// Notice that this is TypeScript, and this code should be in a .tsx file
 import React, { FC } from 'react'
 import { useProduct } from 'vtex.product-context'
 
@@ -42,12 +43,6 @@ export default MyComponent
 :warning: Be sure to run `vtex setup` in your project to install the correct TypeScript types exported by this app.
 
 ## API
-
-### `ProductContext`
-
-The `ProductContext` entry point exports the React context in it's raw form. This is only useful if you want to reference it directly.
-
-Be aware that most of the times, what you're looking for is the `useProduct` hook described below.
 
 ### `useProduct`
 
@@ -76,20 +71,11 @@ you should expect an object that looks like that as the return value of `useProd
 
 ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
 
-### `ProductContextProvider`
+### `ProductContext`
 
-The `ProductContextProvider` component is capable of providing the `ProductContext` to all of it's children. 
+The `ProductContext` entry point exports the React context in it's raw form. This is only useful if you want to reference it directly.
 
-It expects to receive the following props:
-
-```ts
-interface ProductAndQuery {
-  query: Record<string, any>
-  product: MaybeProduct
-}
-```
-
-and will also wrap it's children with the `ProductDispatchContext` component described below.
+Be aware that most of the times, what you're looking for is the `useProduct` hook described below.
 
 ### `ProductDispatchContext`
 
