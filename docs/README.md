@@ -71,43 +71,18 @@ you should expect an object that looks like that as the return value of `useProd
 
 ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
 
-### `ProductContext`
-
-The `ProductContext` entry point exports the React context in it's raw form. This is only useful if you want to reference it directly.
-
-Be aware that most of the times, what you're looking for is the `useProduct` hook described below.
-
 ### `useProductDispatch`
 
 This hooks returns a `dispatch` function you can use to manipulate the nearest `ProductContext`. This function is capable of performing the following `actions`:
 
-```ts
-type Actions =
-  | Action<
-      'SELECT_IMAGE_VARIATION',
-      { args: { selectedImageVariationSKU: string | null } }
-    >
-  | Action<'SET_QUANTITY', { args: { quantity: number } }>
-  | Action<
-      'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
-      { args: { allSelected: boolean } }
-    >
-  | Action<'SET_BUY_BUTTON_CLICKED', { args: { clicked: boolean } }>
-  | Action<'SKU_SELECTOR_SET_IS_VISIBLE', { args: { isVisible: boolean } }>
-  | Action<'SET_SELECTED_ITEM', { args: { item: Item | undefined | null } }>
-  | Action<
-      'SET_ASSEMBLY_OPTIONS',
-      {
-        args: {
-          groupId: string
-          groupItems: AssemblyOptionItem[]
-          groupInputValues: InputValues
-          isValid: boolean
-        }
-      }
-    >
-  | Action<'SET_PRODUCT', { args: { product: MaybeProduct } }>
-```
+- `SELECT_IMAGE_VARIATION`: Sets the value for the `skuSelector.selectedImageVariationSKU` property.
+- `SET_QUANTITY`: Sets the value for the `selectedQuantity` property.
+- `SKU_SELECTOR_SET_VARIATIONS_SELECTED`: Sets the value for the `skuSelector.areAllVariationsSelected` property.
+- `SET_BUY_BUTTON_CLICKED`: Sets the value for the `buyButton.clicked` property.
+- `SKU_SELECTOR_SET_IS_VISIBLE`: Sets the value for the `skuSelector.isVisible` property.
+- `SET_SELECTED_ITEM`: Sets the value for the `selectedItem` property.
+- `SET_ASSEMBLY_OPTIONS`: Sets the value for the `assemblyOptions` property.
+- `SET_PRODUCT`: Sets the value for the `product` property.
 
 ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
 
