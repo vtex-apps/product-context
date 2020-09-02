@@ -28,15 +28,17 @@ export interface BuyButtonContextState {
   clicked: boolean
 }
 
+interface SkuSelectorContextState {
+  selectedImageVariationSKU: string | null
+  isVisible: boolean
+  areAllVariationsSelected: boolean
+}
+
 export interface ProductContextState {
   selectedItem?: Item | null
   product: MaybeProduct
   selectedQuantity: number
-  skuSelector: {
-    selectedImageVariationSKU: string | null
-    isVisible: boolean
-    areAllVariationsSelected: boolean
-  }
+  skuSelector: Partial<SkuSelectorContextState>
   buyButton: BuyButtonContextState
   assemblyOptions: {
     items: Record<GroupId, AssemblyOptionItem[]>
