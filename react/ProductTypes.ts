@@ -96,6 +96,7 @@ export interface Seller {
   addToCartLink: string
   sellerDefault: string
   commertialOffer: {
+    Installments: Installment[]
     discountHighlights: Array<{
       name: string
     }>
@@ -109,8 +110,19 @@ export interface Seller {
     PriceValidUntil: string
     AvailableQuantity: number
     Tax: number
+    taxPercentage: number
     CacheVersionUsedToCallCheckout: string
   }
+}
+
+interface Installment {
+  Value?: number
+  InterestRate?: number
+  TotalValuePlusInterestRate?: number
+  NumberOfInstallments?: number
+  PaymentSystemName?: string
+  PaymentSystemGroupName?: string
+  Name?: string
 }
 
 export interface ItemMetadata {
