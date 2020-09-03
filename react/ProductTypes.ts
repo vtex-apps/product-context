@@ -82,11 +82,11 @@ export interface SkuSpecification {
   values: SkuSpecificationValues[]
 }
 
-interface SkuSpecificationField {
+export interface SkuSpecificationField {
   name: string
 }
 
-interface SkuSpecificationValues {
+export interface SkuSpecificationValues {
   name: string
 }
 
@@ -115,14 +115,14 @@ export interface Seller {
   }
 }
 
-interface Installment {
+export interface Installment {
   Value: number
   InterestRate: number
   TotalValuePlusInterestRate: number
   NumberOfInstallments: number
-  PaymentSystemName?: string
-  PaymentSystemGroupName?: string
-  Name?: string
+  PaymentSystemName: string
+  PaymentSystemGroupName: string
+  Name: string
 }
 
 export interface ItemMetadata {
@@ -149,7 +149,7 @@ export interface ItemMetadata {
   }>
 }
 
-type InputValue = TextInputValue | BooleanInputValue | OptionsInputValue
+export type InputValue = TextInputValue | BooleanInputValue | OptionsInputValue
 
 const enum InputValueType {
   'TEXT' = 'TEXT',
@@ -157,7 +157,7 @@ const enum InputValueType {
   'OPTIONS' = 'OPTIONS',
 }
 
-interface TextInputValue {
+export interface TextInputValue {
   type: InputValueType.TEXT
   defaultValue: ''
   label: string
@@ -165,7 +165,7 @@ interface TextInputValue {
   domain: null
 }
 
-interface BooleanInputValue {
+export interface BooleanInputValue {
   type: InputValueType.BOOLEAN
   defaultValue: boolean
   label: string
@@ -173,7 +173,7 @@ interface BooleanInputValue {
   domain: null
 }
 
-interface OptionsInputValue {
+export interface OptionsInputValue {
   type: InputValueType.OPTIONS
   defaultValue: string
   label: string
@@ -181,7 +181,7 @@ interface OptionsInputValue {
   domain: string[]
 }
 
-interface Composition {
+export interface Composition {
   minQuantity: number
   maxQuantity: number
   items: Array<{
