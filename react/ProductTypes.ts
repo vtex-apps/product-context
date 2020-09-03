@@ -116,10 +116,10 @@ export interface Seller {
 }
 
 interface Installment {
-  Value?: number
-  InterestRate?: number
-  TotalValuePlusInterestRate?: number
-  NumberOfInstallments?: number
+  Value: number
+  InterestRate: number
+  TotalValuePlusInterestRate: number
+  NumberOfInstallments: number
   PaymentSystemName?: string
   PaymentSystemGroupName?: string
   Name?: string
