@@ -10,6 +10,7 @@ export interface Product {
   titleTag: string
   metaTagDescription: string
   linkText: string
+  link: string
   productReference: string
   categoryId: string
   categoriesIds: string[]
@@ -37,6 +38,10 @@ export interface Product {
   itemMetadata: {
     items: ItemMetadata[]
     priceTable: any[]
+  }
+  priceRange: {
+    sellingPrice: { highPrice: number; lowPrice: number }
+    listPrice: { highPrice: number; lowPrice: number }
   }
 }
 
@@ -95,24 +100,28 @@ export interface Seller {
   sellerName: string
   addToCartLink: string
   sellerDefault: string
-  commertialOffer: {
-    Installments: Installment[]
-    discountHighlights: Array<{
-      name: string
-    }>
-    teasers: Array<{
-      name: string
-    }>
-    Price: number
-    ListPrice: number
-    PriceWithoutDiscount: number
-    RewardValue: number
-    PriceValidUntil: string
-    AvailableQuantity: number
-    Tax: number
-    taxPercentage: number
-    CacheVersionUsedToCallCheckout: string
-  }
+  commertialOffer: CommercialOffer
+}
+
+export interface CommercialOffer {
+  Installments: Installment[]
+  discountHighlights: Array<{
+    name: string
+  }>
+  teasers: Array<{
+    name: string
+  }>
+  Price: number
+  ListPrice: number
+  spotPrice: number
+  SellingPrice?: number
+  PriceWithoutDiscount: number
+  RewardValue: number
+  PriceValidUntil: string
+  AvailableQuantity: number
+  Tax: number
+  taxPercentage: number
+  CacheVersionUsedToCallCheckout: string
 }
 
 export interface Installment {
