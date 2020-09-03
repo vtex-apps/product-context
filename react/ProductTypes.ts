@@ -99,7 +99,7 @@ export interface Seller {
   sellerId: string
   sellerName: string
   addToCartLink: string
-  sellerDefault: string
+  sellerDefault: boolean
   commertialOffer: CommercialOffer
 }
 
