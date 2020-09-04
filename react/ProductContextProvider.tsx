@@ -4,6 +4,78 @@ import ProductContext from './ProductContext'
 import { ProductDispatchContext } from './ProductDispatchContext'
 import { useProductReducer, getSelectedItem } from './reducer'
 import { getSelectedSKUFromQueryString } from './modules/skuQueryString'
+import { MaybeProduct, Item } from './ProductTypes'
+
+export interface ProductAndQuery {
+  query: Record<string, any>
+  product: MaybeProduct
+}
+
+type GroupId = string
+
+export interface AssemblyOptionItem {
+  id: string
+  quantity: number
+  seller: string
+  initialQuantity: number
+  choiceType: string
+  name: string
+  price: number
+  children: Record<string, AssemblyOptionItem[]> | null
+}
+
+export interface BuyButtonContextState {
+  clicked: boolean
+}
+
+interface SkuSelectorContextState {
+  selectedImageVariationSKU: string | null
+  isVisible: boolean
+  areAllVariationsSelected: boolean
+}
+
+export interface ProductContextState {
+  selectedItem?: Item | null
+  product: MaybeProduct
+  selectedQuantity: number
+  skuSelector: Partial<SkuSelectorContextState>
+  buyButton: BuyButtonContextState
+  assemblyOptions: {
+    items: Record<GroupId, AssemblyOptionItem[]>
+    inputValues: Record<GroupId, InputValues>
+    areGroupsValid: Record<GroupId, boolean>
+  }
+}
+
+type InputValues = Record<string, string>
+
+type Action<K, V = void> = V extends void ? { type: K } : { type: K } & V
+
+export type Actions =
+  | Action<
+      'SELECT_IMAGE_VARIATION',
+      { args: { selectedImageVariationSKU: string | null } }
+    >
+  | Action<'SET_QUANTITY', { args: { quantity: number } }>
+  | Action<
+      'SKU_SELECTOR_SET_VARIATIONS_SELECTED',
+      { args: { allSelected: boolean } }
+    >
+  | Action<'SET_BUY_BUTTON_CLICKED', { args: { clicked: boolean } }>
+  | Action<'SKU_SELECTOR_SET_IS_VISIBLE', { args: { isVisible: boolean } }>
+  | Action<'SET_SELECTED_ITEM', { args: { item: Item | undefined | null } }>
+  | Action<
+      'SET_ASSEMBLY_OPTIONS',
+      {
+        args: {
+          groupId: string
+          groupItems: AssemblyOptionItem[]
+          groupInputValues: InputValues
+          isValid: boolean
+        }
+      }
+    >
+  | Action<'SET_PRODUCT', { args: { product: MaybeProduct } }>
 
 function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
   useEffect(() => {

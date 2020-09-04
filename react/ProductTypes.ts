@@ -1,8 +1,8 @@
 type Maybe<T> = T | null | undefined
 
-type MaybeProduct = Maybe<Product>
+export type MaybeProduct = Maybe<Product>
 
-interface Product {
+export interface Product {
   cacheId: string
   productName: string
   productId: string
@@ -10,6 +10,7 @@ interface Product {
   titleTag: string
   metaTagDescription: string
   linkText: string
+  link: string
   productReference: string
   categoryId: string
   categoriesIds: string[]
@@ -38,9 +39,13 @@ interface Product {
     items: ItemMetadata[]
     priceTable: any[]
   }
+  priceRange: {
+    sellingPrice: { highPrice: number; lowPrice: number }
+    listPrice: { highPrice: number; lowPrice: number }
+  }
 }
 
-interface Item {
+export interface Item {
   itemId: string
   name: string
   nameComplete: string
@@ -77,43 +82,59 @@ interface Item {
   }>
 }
 
-interface SkuSpecification {
+export interface SkuSpecification {
   field: SkuSpecificationField
   values: SkuSpecificationValues[]
 }
 
-interface SkuSpecificationField {
+export interface SkuSpecificationField {
   name: string
 }
 
-interface SkuSpecificationValues {
+export interface SkuSpecificationValues {
   name: string
 }
 
-interface Seller {
+export interface Seller {
   sellerId: string
   sellerName: string
   addToCartLink: string
-  sellerDefault: string
-  commertialOffer: {
-    discountHighlights: Array<{
-      name: string
-    }>
-    teasers: Array<{
-      name: string
-    }>
-    Price: number
-    ListPrice: number
-    PriceWithoutDiscount: number
-    RewardValue: number
-    PriceValidUntil: string
-    AvailableQuantity: number
-    Tax: number
-    CacheVersionUsedToCallCheckout: string
-  }
+  sellerDefault: boolean
+  commertialOffer: CommercialOffer
 }
 
-interface ItemMetadata {
+export interface CommercialOffer {
+  Installments: Installment[]
+  discountHighlights: Array<{
+    name: string
+  }>
+  teasers: Array<{
+    name: string
+  }>
+  Price: number
+  ListPrice: number
+  spotPrice: number
+  SellingPrice?: number
+  PriceWithoutDiscount: number
+  RewardValue: number
+  PriceValidUntil: string
+  AvailableQuantity: number
+  Tax: number
+  taxPercentage: number
+  CacheVersionUsedToCallCheckout: string
+}
+
+export interface Installment {
+  Value: number
+  InterestRate: number
+  TotalValuePlusInterestRate: number
+  NumberOfInstallments: number
+  PaymentSystemName: string
+  PaymentSystemGroupName: string
+  Name: string
+}
+
+export interface ItemMetadata {
   items: Array<{
     id: string
     name: string
@@ -137,7 +158,7 @@ interface ItemMetadata {
   }>
 }
 
-type InputValue = TextInputValue | BooleanInputValue | OptionsInputValue
+export type InputValue = TextInputValue | BooleanInputValue | OptionsInputValue
 
 const enum InputValueType {
   'TEXT' = 'TEXT',
@@ -145,7 +166,7 @@ const enum InputValueType {
   'OPTIONS' = 'OPTIONS',
 }
 
-interface TextInputValue {
+export interface TextInputValue {
   type: InputValueType.TEXT
   defaultValue: ''
   label: string
@@ -153,7 +174,7 @@ interface TextInputValue {
   domain: null
 }
 
-interface BooleanInputValue {
+export interface BooleanInputValue {
   type: InputValueType.BOOLEAN
   defaultValue: boolean
   label: string
@@ -161,7 +182,7 @@ interface BooleanInputValue {
   domain: null
 }
 
-interface OptionsInputValue {
+export interface OptionsInputValue {
   type: InputValueType.OPTIONS
   defaultValue: string
   label: string
@@ -169,7 +190,7 @@ interface OptionsInputValue {
   domain: string[]
 }
 
-interface Composition {
+export interface Composition {
   minQuantity: number
   maxQuantity: number
   items: Array<{

@@ -1,3 +1,9 @@
 import { createContext } from 'react'
 
-export default createContext({})
+import { ProductContextState } from './ProductContextProvider'
+
+const ProductContext = createContext<Partial<ProductContextState> | undefined>(
+  {}
+)
+
+export default ProductContext
