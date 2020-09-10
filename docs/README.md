@@ -1,4 +1,4 @@
-📢 Use this project, [contribute](https://github.com/vtex-apps/add-to-cart-button) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
+📢 Use this project, [contribute](https://github.com/vtex-apps/product-context) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
 
 # Product Context
 
@@ -6,21 +6,20 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-The Product Context app is responsible for exposing data regarding a certain product to all of it's children.
+The Product Context app is responsible for providing data regarding a certain product to all of its children blocks.
 
-## Usage example
+## Configuration
 
-To use this app, be sure to add it to you app's `manifest.json` file:
+1. Add the `product-context` app as a dependency in you theme's `manifest.json` file:
 
-```json
-{
+
+```diff
   "dependencies": {
-    "vtex.product-context": "0.x"
++   "vtex.product-context": "0.x"
   }
-}
 ```
 
-then you can import any of the exported components and hooks from the app. Here's an example of a component that render's the name of the product whose data is stored in the nearest `ProductContext`:
+Now, you can import any of the exported components and hooks from the app. Here's an example of a component that render's the name of the product whose data is stored in the nearest `ProductContext`:
 
 ```tsx
 // Notice that this is TypeScript, and this code should be in a .tsx file
@@ -40,13 +39,15 @@ const MyComponent: FC = () => {
 export default MyComponent
 ```
 
-:warning: Be sure to run `vtex setup` in your project to install the correct TypeScript types exported by this app.
+:warning: *Be sure to run `vtex setup` in your project to install the correct TypeScript types exported by this app.*
 
-## API
+### Hooks
 
-### `useProduct`
+#### `useProduct`
 
-This is the most useful export from this app. The `useProduct` hook can be used to read the data from the nearest `ProductContext` relative to its caller. The `productContextValue` variable from the example in the [Usage Example](#usage-example) example has the following type definition:
+This is the most useful export from this app. The `useProduct` hook can be used to read the data from the nearest `ProductContext` relative to its caller. 
+
+The `productContextValue` variable from the example above has the following type definition:
 
 ```ts
 interface ProductContextState {
@@ -67,13 +68,15 @@ interface ProductContextState {
 }
 ```
 
-you should expect an object that looks like that as the return value of `useProduct`. Just be aware that, if the hook is called **outside** of a `ProductContextProvider`, the return value could be `undefined` or an empty object.
+You should expect an object that looks like that as the return value of `useProduct`. Be aware that, if the hook is called **outside** of a `ProductContextProvider`, the return value could be `undefined` or an empty object.
 
-ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
+:information_source: *To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.*
 
-### `useProductDispatch`
+#### `useProductDispatch`
 
-This hooks returns a `dispatch` function you can use to manipulate the nearest `ProductContext`. This function is capable of performing the following `actions`:
+This hooks returns a `dispatch` function which you can use to manipulate the nearest `ProductContext`. 
+
+The function is capable of performing the following `actions`:
 
 - `SELECT_IMAGE_VARIATION`: Sets the value for the `skuSelector.selectedImageVariationSKU` property.
 - `SET_QUANTITY`: Sets the value for the `selectedQuantity` property.
@@ -84,11 +87,13 @@ This hooks returns a `dispatch` function you can use to manipulate the nearest `
 - `SET_ASSEMBLY_OPTIONS`: Sets the value for the `assemblyOptions` property.
 - `SET_PRODUCT`: Sets the value for the `product` property.
 
-ℹ️ To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.
+:information_source: *To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.*
+
+<!-- DOCS-IGNORE:start -->
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful people:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -98,3 +103,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+<!-- DOCS-IGNORE:end -->
