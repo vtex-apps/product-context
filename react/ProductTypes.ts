@@ -2,61 +2,41 @@ type Maybe<T> = T | null | undefined
 
 export type MaybeProduct = Maybe<Product>
 
-export interface Product {
-  cacheId: string
-  productName: string
-  productId: string
-  description: string
-  titleTag: string
-  metaTagDescription: string
-  linkText: string
-  link: string
-  productReference: string
-  categoryId: string
-  categoriesIds: string[]
-  categories: string[]
-  categoryTree: Array<{
-    id: string
-    name: string
-    href: string
-  }>
+export type Product = {
   brand: string
   brandId: string
-  properties: Array<{
-    name: string
-    values: string
-  }>
-  specificationGroups: Array<{
-    name: string
-    specifications: Array<{
-      name: string
-      values: string[]
-    }>
-  }>
+  cacheId: string
+  categories: string[]
+  categoriesIds: string[]
+  categoryId: string
+  categoryTree: Array<{ id: string; name: string; href: string }>
+  clusterHighlights: Array<{ id: string; name: string }>
+  description: string
+  itemMetadata: { items: ItemMetadata[]; priceTable: any[] }
   items: Item[]
-  skuSpecifications: SkuSpecification[]
-  itemMetadata: {
-    items: ItemMetadata[]
-    priceTable: any[]
-  }
+  link: string
+  linkText: string
+  metaTagDescription: string
   priceRange: {
     sellingPrice: { highPrice: number; lowPrice: number }
     listPrice: { highPrice: number; lowPrice: number }
   }
+  productClusters: Array<{ id: string; name: string }>
+  productId: string
+  productName: string
+  productReference: string
+  properties: Array<{ name: string; values: string }>
+  skuSpecifications: SkuSpecification[]
+  specificationGroups: Array<{
+    name: string
+    specifications: Array<{ name: string; values: string[] }>
+  }>
+  titleTag: string
 }
 
-export interface Item {
-  itemId: string
-  name: string
-  nameComplete: string
+export type Item = {
   complementName: string
   ean: string
-  referenceId: Array<{
-    Key: string
-    Value: string
-  }>
-  measurementUnit: string
-  unitMultiplier: number
   images: Array<{
     imageId: string
     imageLabel: string
@@ -64,38 +44,31 @@ export interface Item {
     imageUrl: string
     imageText: string
   }>
-  videos: Array<{
-    videoUrl: string
-  }>
+  itemId: string
+  measurementUnit: string
+  name: string
+  nameComplete: string
+  referenceId: Array<{ Key: string; Value: string }>
   sellers: Seller[]
-  variations: Array<{
-    name: string
-    values: string[]
-  }>
-  productClusters: Array<{
-    id: string
-    name: string
-  }>
-  clusterHighlights: Array<{
-    id: string
-    name: string
-  }>
+  unitMultiplier: number
+  variations: Array<{ name: string; values: string[] }>
+  videos: Array<{ videoUrl: string }>
 }
 
-export interface SkuSpecification {
+export type SkuSpecification = {
   field: SkuSpecificationField
   values: SkuSpecificationValues[]
 }
 
-export interface SkuSpecificationField {
+export type SkuSpecificationField = {
   name: string
 }
 
-export interface SkuSpecificationValues {
+export type SkuSpecificationValues = {
   name: string
 }
 
-export interface Seller {
+export type Seller = {
   sellerId: string
   sellerName: string
   addToCartLink: string
@@ -103,14 +76,10 @@ export interface Seller {
   commertialOffer: CommercialOffer
 }
 
-export interface CommercialOffer {
+export type CommercialOffer = {
   Installments: Installment[]
-  discountHighlights: Array<{
-    name: string
-  }>
-  teasers: Array<{
-    name: string
-  }>
+  discountHighlights: Array<{ name: string }>
+  teasers: Array<{ name: string }>
   Price: number
   ListPrice: number
   spotPrice: number
@@ -124,7 +93,7 @@ export interface CommercialOffer {
   CacheVersionUsedToCallCheckout: string
 }
 
-export interface Installment {
+export type Installment = {
   Value: number
   InterestRate: number
   TotalValuePlusInterestRate: number
@@ -134,7 +103,7 @@ export interface Installment {
   Name: string
 }
 
-export interface ItemMetadata {
+export type ItemMetadata = {
   items: Array<{
     id: string
     name: string
@@ -150,11 +119,7 @@ export interface ItemMetadata {
   }>
   priceTable: Array<{
     type: string
-    values: Array<{
-      id: string
-      assemblyId: string
-      price: number | null
-    }>
+    values: Array<{ id: string; assemblyId: string; price: number | null }>
   }>
 }
 
@@ -166,7 +131,7 @@ const enum InputValueType {
   'OPTIONS' = 'OPTIONS',
 }
 
-export interface TextInputValue {
+export type TextInputValue = {
   type: InputValueType.TEXT
   defaultValue: ''
   label: string
@@ -174,7 +139,7 @@ export interface TextInputValue {
   domain: null
 }
 
-export interface BooleanInputValue {
+export type BooleanInputValue = {
   type: InputValueType.BOOLEAN
   defaultValue: boolean
   label: string
@@ -182,7 +147,7 @@ export interface BooleanInputValue {
   domain: null
 }
 
-export interface OptionsInputValue {
+export type OptionsInputValue = {
   type: InputValueType.OPTIONS
   defaultValue: string
   label: string
@@ -190,7 +155,7 @@ export interface OptionsInputValue {
   domain: string[]
 }
 
-export interface Composition {
+export type Composition = {
   minQuantity: number
   maxQuantity: number
   items: Array<{
