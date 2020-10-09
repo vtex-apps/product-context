@@ -2,6 +2,8 @@ type Maybe<T> = T | null | undefined
 
 export type MaybeProduct = Maybe<Product>
 
+export type ProductSpecification = { name: string; values: string[] }
+
 export type Product = {
   brand: string
   brandId: string
@@ -25,11 +27,11 @@ export type Product = {
   productId: string
   productName: string
   productReference: string
-  properties: Array<{ name: string; values: string }>
+  properties: ProductSpecification[]
   skuSpecifications: SkuSpecification[]
   specificationGroups: Array<{
     name: string
-    specifications: Array<{ name: string; values: string[] }>
+    specifications: ProductSpecification[]
   }>
   titleTag: string
 }
