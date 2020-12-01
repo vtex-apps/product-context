@@ -11,7 +11,7 @@ export type SpecificationGroupItem = {
 export type SpecificationGroup = {
   name: string
   originalName: string
-  specifications: SpecificationGroupItem
+  specifications: SpecificationGroupItem[]
 }
 
 export type Product = {
