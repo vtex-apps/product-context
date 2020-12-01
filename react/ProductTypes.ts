@@ -4,6 +4,16 @@ export type MaybeProduct = Maybe<Product>
 
 export type ProductSpecification = { name: string; values: string[] }
 
+export type SpecificationGroupItem = {
+  originalName: string
+} & ProductSpecification
+
+export type SpecificationGroup = {
+  name: string
+  originalName: string
+  specifications: SpecificationGroupItem
+}
+
 export type Product = {
   brand: string
   brandId: string
@@ -29,10 +39,7 @@ export type Product = {
   productReference: string
   properties: ProductSpecification[]
   skuSpecifications: SkuSpecification[]
-  specificationGroups: Array<{
-    name: string
-    specifications: ProductSpecification[]
-  }>
+  specificationGroups: SpecificationGroup[]
   titleTag: string
 }
 
