@@ -8,16 +8,19 @@ type Maybe<T> = T | null | undefined
 
 export type MaybeProduct = Maybe<Product>
 
-export type ProductSpecification = { name: string; values: string[] }
-
-export type SpecificationGroupItem = {
+export type ProductSpecification = {
+  name: string
   originalName: string
-} & ProductSpecification
+  values: string[]
+}
+
+/** @deprecated Use `ProductSpecification` */
+export type SpecificationGroupItem = ProductSpecification
 
 export type SpecificationGroup = {
   name: string
   originalName: string
-  specifications: SpecificationGroupItem[]
+  specifications: ProductSpecification[]
 }
 
 export type Product = {
