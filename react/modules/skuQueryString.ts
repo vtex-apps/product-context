@@ -1,5 +1,5 @@
 import { itemHasVariation, findAvailableProduct } from './items'
-import { Item } from '../ProductTypes'
+import type { Item } from '../ProductTypes'
 
 interface QueryParams {
   skuId?: string
@@ -30,7 +30,7 @@ export const getSelectedSKUFromQueryString = (
     return
   }
 
-  const itemsWithVariation = items.filter(item =>
+  const itemsWithVariation = items.filter((item) =>
     variantQueryProps.every(([name, value]) => {
       return itemHasVariation(item, { name, value })
     })
@@ -40,7 +40,7 @@ export const getSelectedSKUFromQueryString = (
     return
   }
 
-  const availableItem = itemsWithVariation.find(item =>
+  const availableItem = itemsWithVariation.find((item) =>
     findAvailableProduct(item)
   )
 

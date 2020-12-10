@@ -28,7 +28,7 @@ export interface BuyButtonContextState {
   clicked: boolean
 }
 
-interface SkuSelectorContextState {
+export interface SkuSelectorContextState {
   selectedImageVariationSKU: string | null
   isVisible: boolean
   areAllVariationsSelected: boolean

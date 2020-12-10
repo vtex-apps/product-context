@@ -2,8 +2,8 @@ import { useReducer } from 'react'
 
 import { getSelectedSKUFromQueryString } from '../modules/skuQueryString'
 import { findAvailableProduct } from '../modules/items'
-import { Item } from '../ProductTypes'
-import {
+import type { Item } from '../ProductTypes'
+import type {
   ProductContextState,
   Actions,
   ProductAndQuery,
@@ -145,7 +145,7 @@ function reducer(
 
 export function getSelectedItem(skuId: string | undefined, items: Item[]) {
   return skuId
-    ? items.find(item => item.itemId === skuId)
+    ? items.find((item) => item.itemId === skuId)
     : items.find(findAvailableProduct) ?? items[0]
 }
 

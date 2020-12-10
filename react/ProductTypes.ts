@@ -1,3 +1,9 @@
+export type {
+  ProductContextState,
+  AssemblyOptionItem,
+  SkuSelectorContextState,
+} from './ProductContextProvider'
+
 type Maybe<T> = T | null | undefined
 
 export type MaybeProduct = Maybe<Product>
@@ -85,10 +91,31 @@ export type Seller = {
   commertialOffer: CommercialOffer
 }
 
+type TeaserCondition = {
+  minimumQuantity: number
+  parameters: Array<{
+    name: string
+    value: string
+  }>
+}
+
+type TeaserEffects = {
+  parameters: Array<{
+    name: string
+    value: string
+  }>
+}
+
+export type Teaser = {
+  name: string
+  conditions: TeaserCondition
+  effects: TeaserEffects
+}
+
 export type CommercialOffer = {
   Installments: Installment[]
   discountHighlights: Array<{ name: string }>
-  teasers: Array<{ name: string }>
+  teasers: Teaser[]
   Price: number
   ListPrice: number
   spotPrice: number
