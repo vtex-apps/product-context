@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Expose context state types.
+- `teasers` types.
 
 ## [0.9.4] - 2020-12-01
 ### Fixed
