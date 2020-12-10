@@ -1,3 +1,5 @@
+export type { ProductContextState, AssemblyOptionItem, SkuSelectorContextState } from './ProductContextProvider'
+
 type Maybe<T> = T | null | undefined
 
 export type MaybeProduct = Maybe<Product>
