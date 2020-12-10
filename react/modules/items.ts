@@ -1,4 +1,4 @@
-import { Item, Seller } from '../ProductTypes'
+import type { Item, Seller } from '../ProductTypes'
 
 export function findAvailableProduct(item: Item) {
   return item.sellers.find((seller: Seller) => {
@@ -12,9 +12,9 @@ export function itemHasVariation(
 ) {
   return Boolean(
     item.variations.find(
-      variation =>
+      (variation) =>
         variation.name === name &&
-        variation.values.some(variationValue => variationValue === value)
+        variation.values.some((variationValue) => variationValue === value)
     )
   )
 }
