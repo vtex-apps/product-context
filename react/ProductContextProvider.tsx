@@ -77,17 +77,6 @@ export type Actions =
     >
   | Action<'SET_PRODUCT', { args: { product: MaybeProduct } }>
 
-function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
-  useEffect(() => {
-    if (product) {
-      dispatch({
-        type: 'SET_PRODUCT',
-        args: { product },
-      })
-    }
-  }, [product, dispatch])
-}
-
 function useSelectedItemFromId(
   dispatch: Dispatch<Actions>,
   product: MaybeProduct,
@@ -110,8 +99,14 @@ const ProductContextProvider: FC<ProductAndQuery> = ({
 }) => {
   const [state, dispatch] = useProductReducer({ query, product })
 
-  // These hooks are used to keep the state in sync with API data, specially when switching between products without exiting the product page
-  useProductInState(product, dispatch)
+  // It is used to keep the state in sync with API data, specially when switching between products without exiting the product page
+  if (product && (product.productId !== state?.product?.productId)) {
+    dispatch({
+      type: 'SET_PRODUCT',
+      args: { product },
+    })
+  }
+
   const selectedSkuQueryString = getSelectedSKUFromQueryString(
     query,
     product?.items
