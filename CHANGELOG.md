@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Product State context not being updated when prefetch is enabled.
+
 ## [0.9.6] - 2020-12-15
 ### Fixed
 - Product Dispatch context.
