@@ -33,7 +33,7 @@ export type Product = {
   categoryTree: Array<{ id: string; name: string; href: string }>
   clusterHighlights: Array<{ id: string; name: string }>
   description: string
-  itemMetadata: { items: ItemMetadata[]; priceTable: any[] }
+  itemMetadata: ItemMetadata
   items: Item[]
   link: string
   linkText: string
