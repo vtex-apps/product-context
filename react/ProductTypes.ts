@@ -148,13 +148,13 @@ export type ItemMetadata = {
     name: string
     imageUrl: string
     seller: string
-    assemblyOptions: {
+    assemblyOptions: Array<{
       id: string
       name: string
       required: boolean
       inputValues: InputValue[]
       composition: Composition | null
-    }
+    }>
   }>
   priceTable: Array<{
     type: string
