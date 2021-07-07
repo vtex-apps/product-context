@@ -35,6 +35,7 @@ export interface SkuSelectorContextState {
 }
 
 export interface ProductContextState {
+  loadingItem: boolean
   selectedItem?: Item | null
   product: MaybeProduct
   selectedQuantity: number
@@ -76,6 +77,7 @@ export type Actions =
       }
     >
   | Action<'SET_PRODUCT', { args: { product: MaybeProduct } }>
+  | Action<'SET_LOADING_ITEM', { args: { loadingItem: boolean } }>
 
 function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
   useEffect(() => {

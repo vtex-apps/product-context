@@ -10,6 +10,7 @@ import type {
 } from '../ProductContextProvider'
 
 const defaultState: ProductContextState = {
+  loadingItem: false,
   product: undefined,
   selectedItem: null,
   selectedQuantity: 1,
@@ -95,7 +96,15 @@ function reducer(
 
       return {
         ...state,
+        loadingItem: false,
         selectedItem: args.item,
+      }
+    }
+
+    case 'SET_LOADING_ITEM': {
+      return {
+        ...state,
+        loadingItem: !!action.args.loadingItem
       }
     }
 
