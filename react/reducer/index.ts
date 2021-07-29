@@ -104,7 +104,7 @@ function reducer(
     case 'SET_LOADING_ITEM': {
       return {
         ...state,
-        loadingItem: !!action.args.loadingItem
+        loadingItem: Boolean(action.args.loadingItem),
       }
     }
 
