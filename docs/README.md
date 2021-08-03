@@ -86,6 +86,7 @@ The function is capable of performing the following `actions`:
 - `SET_SELECTED_ITEM`: Sets the value for the `selectedItem` property.
 - `SET_ASSEMBLY_OPTIONS`: Sets the value for the `assemblyOptions` property.
 - `SET_PRODUCT`: Sets the value for the `product` property.
+- `SET_LOADING_ITEM`: Sets the value if a selected item is loading or not.
 
 :information_source: *To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.*
 
