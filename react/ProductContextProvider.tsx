@@ -102,6 +102,11 @@ function useSelectedItemFromId(
       type: 'SET_SELECTED_ITEM',
       args: { item: getSelectedItem(skuId, items) },
     })
+
+    dispatch({
+      type: 'SET_LOADING_ITEM',
+      args: { loadingItem: false }
+    })
   }, [dispatch, skuId, product])
 }
 

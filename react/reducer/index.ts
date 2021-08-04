@@ -96,7 +96,6 @@ function reducer(
 
       return {
         ...state,
-        loadingItem: false,
         selectedItem: args.item,
       }
     }
