@@ -100,6 +100,17 @@ function reducer(
       }
     }
 
+    case 'SET_SELECTED_SKUID': {
+      return {
+        ...state,
+        loadingItem: state.selectedItem?.itemId !== action.args.skuId,
+        selectedItem: getSelectedItem(
+          action.args.skuId,
+          state.product?.items ?? []
+        ),
+      }
+    }
+
     case 'SET_LOADING_ITEM': {
       return {
         ...state,

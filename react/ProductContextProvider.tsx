@@ -1,10 +1,11 @@
-import React, { FC, useEffect, Dispatch } from 'react'
+import type { FC, Dispatch } from 'react'
+import React, { useRef, useContext, useEffect } from 'react'
+import { useRuntime } from 'vtex.render-runtime'
 
 import ProductContext from './ProductContext'
 import { ProductDispatchContext } from './ProductDispatchContext'
-import { useProductReducer, getSelectedItem } from './reducer'
-import { getSelectedSKUFromQueryString } from './modules/skuQueryString'
-import { MaybeProduct, Item } from './ProductTypes'
+import { useProductReducer } from './reducer'
+import type { MaybeProduct, Item } from './ProductTypes'
 
 export interface ProductAndQuery {
   query: Record<string, any>
@@ -78,6 +79,7 @@ export type Actions =
     >
   | Action<'SET_PRODUCT', { args: { product: MaybeProduct } }>
   | Action<'SET_LOADING_ITEM', { args: { loadingItem: boolean } }>
+  | Action<'SET_SELECTED_SKUID', { args: { skuId: string } }>
 
 function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
   useEffect(() => {
@@ -90,24 +92,31 @@ function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
   }, [product, dispatch])
 }
 
-function useSelectedItemFromId(
-  dispatch: Dispatch<Actions>,
-  product: MaybeProduct,
-  skuId?: string
-) {
-  useEffect(() => {
-    const items = product?.items ?? []
+const useUpdateQueryBySKU = ({
+  skuId,
+  dispatch,
+  isRoot,
+}: {
+  skuId: string
+  dispatch: Dispatch<Actions>
+  isRoot: boolean
+}) => {
+  const skipOnMountRef = useRef(true)
+  const { setQuery } = useRuntime()
 
-    dispatch({
-      type: 'SET_SELECTED_ITEM',
-      args: { item: getSelectedItem(skuId, items) },
-    })
+  useEffect(() => {
+    if (!isRoot || skipOnMountRef.current) {
+      skipOnMountRef.current = false
+
+      return
+    }
 
     dispatch({
       type: 'SET_LOADING_ITEM',
-      args: { loadingItem: false }
+      args: { loadingItem: false },
     })
-  }, [dispatch, skuId, product])
+    setQuery({ skuId }, { replace: true })
+  }, [skuId, isRoot, setQuery, dispatch])
 }
 
 const ProductContextProvider: FC<ProductAndQuery> = ({
@@ -117,14 +126,18 @@ const ProductContextProvider: FC<ProductAndQuery> = ({
 }) => {
   const [state, dispatch] = useProductReducer({ query, product })
 
+  // This is a hack to know if this is the root ProductContextProvider
+  const ctx = useContext(ProductContext)
+  const isRoot = JSON.stringify(ctx) === JSON.stringify({})
+
   // These hooks are used to keep the state in sync with API data, specially when switching between products without exiting the product page
   useProductInState(product, dispatch)
-  const selectedSkuQueryString = getSelectedSKUFromQueryString(
-    query,
-    product?.items
-  )
 
-  useSelectedItemFromId(dispatch, product, selectedSkuQueryString)
+  useUpdateQueryBySKU({
+    skuId: state.selectedItem?.itemId ?? '',
+    isRoot,
+    dispatch,
+  })
 
   return (
     <ProductContext.Provider value={state}>
