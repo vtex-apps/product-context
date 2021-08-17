@@ -102,7 +102,7 @@ function useSelectedItemFromId(
       type: 'SET_SELECTED_ITEM',
       args: { item: getSelectedItem(skuId, items) },
     })
-  }, [dispatch, skuId, product])
+  }, [])
 }
 
 const ProductContextProvider: FC<ProductAndQuery> = ({
