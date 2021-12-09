@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- added product release date
+
 ## [0.10.0] - 2021-08-03
 ### Added
 - `loadingItem` to product context
