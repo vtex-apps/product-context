@@ -12,6 +12,7 @@ export const getProduct = (customFields = {}): Partial<Product> => {
     productReference: '',
     brandId: '',
     properties: [],
+    releaseDate: '2019-01-01T00:00:00',
     specificationGroups: [],
     categories: [
       '/Category A/',

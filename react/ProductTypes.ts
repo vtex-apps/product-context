@@ -47,6 +47,7 @@ export type Product = {
   productName: string
   productReference: string
   properties: ProductSpecification[]
+  releaseDate: string
   skuSpecifications: SkuSpecification[]
   specificationGroups: SpecificationGroup[]
   titleTag: string
