@@ -206,3 +206,11 @@ export type Composition = {
     initialQuantity: number
   }>
 }
+
+declare global {
+  interface Window {
+    __RUNTIME__: {
+      segmentToken: string
+    }
+  }
+}

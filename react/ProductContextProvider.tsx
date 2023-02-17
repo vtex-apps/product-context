@@ -1,10 +1,11 @@
-import React, { FC, useEffect, Dispatch } from 'react'
+import type { Dispatch, FC } from 'react'
+import React, { useEffect } from 'react'
 
 import ProductContext from './ProductContext'
 import { ProductDispatchContext } from './ProductDispatchContext'
-import { useProductReducer, getSelectedItem } from './reducer'
+import { getSelectedItem, useProductReducer } from './reducer'
 import { getSelectedSKUFromQueryString } from './modules/skuQueryString'
-import { MaybeProduct, Item } from './ProductTypes'
+import type { Item, MaybeProduct } from './ProductTypes'
 
 export interface ProductAndQuery {
   query: Record<string, any>
@@ -105,21 +106,67 @@ function useSelectedItemFromId(
   }, [dispatch, skuId, product])
 }
 
+function getDefaultSellerByFacets(): string | null {
+  const { facets } = JSON.parse(
+    Buffer.from(window.__RUNTIME__.segmentToken, 'base64').toString('binary')
+  )
+
+  if (facets) {
+    const facetsList = facets.split(';')
+    const sellerFacet = facetsList.find((facet: string) =>
+      facet.includes('private-seller')
+    )
+
+    return sellerFacet?.split('=')[1]
+  }
+
+  return null
+}
+
+function setDefaultSellerToProductItems(
+  product: MaybeProduct,
+  defaultSeller: string
+): MaybeProduct {
+  const newItems = product?.items?.map((item) => {
+    return {
+      ...item,
+      sellers: item?.sellers?.map((seller) => ({
+        ...seller,
+        sellerDefault: seller?.sellerId === defaultSeller,
+      })),
+    }
+  })
+
+  return {
+    ...product,
+    ...(newItems ? { items: newItems } : {}),
+  } as MaybeProduct
+}
+
 const ProductContextProvider: FC<ProductAndQuery> = ({
   query,
   product,
   children,
 }) => {
-  const [state, dispatch] = useProductReducer({ query, product })
+  const seller = getDefaultSellerByFacets()
+  const currentProduct =
+    product && seller
+      ? (setDefaultSellerToProductItems(product, seller) as MaybeProduct)
+      : product
+
+  const [state, dispatch] = useProductReducer({
+    query,
+    product: currentProduct,
+  })
 
   // These hooks are used to keep the state in sync with API data, specially when switching between products without exiting the product page
-  useProductInState(product, dispatch)
+  useProductInState(currentProduct, dispatch)
   const selectedSkuQueryString = getSelectedSKUFromQueryString(
     query,
-    product?.items
+    currentProduct?.items
   )
 
-  useSelectedItemFromId(dispatch, product, selectedSkuQueryString)
+  useSelectedItemFromId(dispatch, currentProduct, selectedSkuQueryString)
 
   return (
     <ProductContext.Provider value={state}>
