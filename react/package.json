@@ -13,5 +13,5 @@
     "typescript": "3.9.7",
     "vtex.render-runtime": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.render-runtime@8.62.2/public/_types/react"
   },
-  "version": "0.10.0"
+  "version": "0.10.1"
 }
