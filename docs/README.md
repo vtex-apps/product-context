@@ -6,20 +6,25 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-The Product Context app is responsible for providing data regarding a certain product to all of its children blocks.
+The Product Context app is designed to provide essential product data to all child blocks within your store theme.
 
 ## Configuration
 
-1. Add the `product-context` app as a dependency in you theme's `manifest.json` file:
+1. Add the `product-context` app as a dependency to your store theme's `manifest.json` file:
+    
+    ```diff manifest.json
+      "dependencies": {
+    +   "vtex.product-context": "0.x"
+      }
+    ```
+    
+2. Install the TypeScript types exported by the app by running the following command:
+    
+    ```sh
+    vtex setup
+    ```
 
-
-```diff
-  "dependencies": {
-+   "vtex.product-context": "0.x"
-  }
-```
-
-Now, you can import any of the exported components and hooks from the app. Here's an example of a component that render's the name of the product whose data is stored in the nearest `ProductContext`:
+Now, you're ready to import components and hooks from the app. Check this example component that displays the product name using data stored in the nearest `ProductContext`:
 
 ```tsx
 // Notice that this is TypeScript, and this code should be in a .tsx file
@@ -27,7 +32,7 @@ import React, { FC } from 'react'
 import { useProduct } from 'vtex.product-context'
 
 const MyComponent: FC = () => {
-  const productContextValue = useProduct()
+  const productContextValue = useProduct();
 
   return (
     <Fragment>
@@ -39,15 +44,11 @@ const MyComponent: FC = () => {
 export default MyComponent
 ```
 
-:warning: *Be sure to run `vtex setup` in your project to install the correct TypeScript types exported by this app.*
+## Hooks
 
-### Hooks
+### `useProduct`
 
-#### `useProduct`
-
-This is the most useful export from this app. The `useProduct` hook can be used to read the data from the nearest `ProductContext` relative to its caller. 
-
-The `productContextValue` variable from the example above has the following type definition:
+The `useProduct` hook allows your app to retrieve data from the nearest `ProductContext` relative to its caller. Expect an object with the structure below as the return value:
 
 ```ts
 interface ProductContextState {
@@ -68,15 +69,11 @@ interface ProductContextState {
 }
 ```
 
-You should expect an object that looks like that as the return value of `useProduct`. Be aware that, if the hook is called **outside** of a `ProductContextProvider`, the return value could be `undefined` or an empty object.
+> Note that if the hook is called outside a `ProductContextProvider`, the return value may be `undefined` or an empty object.
 
-:information_source: *To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.*
+### `useProductDispatch`
 
-#### `useProductDispatch`
-
-This hooks returns a `dispatch` function which you can use to manipulate the nearest `ProductContext`. 
-
-The function is capable of performing the following `actions`:
+The `useProductDispatch` hook provides a `dispatch` function to manipulate the nearest `ProductContext`. The function supports the following actions:
 
 - `SELECT_IMAGE_VARIATION`: Sets the value for the `skuSelector.selectedImageVariationSKU` property.
 - `SET_QUANTITY`: Sets the value for the `selectedQuantity` property.
@@ -86,9 +83,7 @@ The function is capable of performing the following `actions`:
 - `SET_SELECTED_ITEM`: Sets the value for the `selectedItem` property.
 - `SET_ASSEMBLY_OPTIONS`: Sets the value for the `assemblyOptions` property.
 - `SET_PRODUCT`: Sets the value for the `product` property.
-- `SET_LOADING_ITEM`: Sets the value if a selected item is loading or not.
-
-:information_source: *To have the full type definition in your development environment, be sure to run `vtex setup` in your project to install all TypeScript types exported by this app.*
+- `SET_LOADING_ITEM`: Sets the value of whether a selected item is loading.
 
 <!-- DOCS-IGNORE:start -->
 
