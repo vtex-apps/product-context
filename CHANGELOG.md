@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-05-26
+
 ### Added
 
 - `SkuNonStructuredAttribute` type and optional `attributes` field on the `Item` type to expose non-structured SKU specifications coming from `vtex.search-graphql`.
