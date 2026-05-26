@@ -52,6 +52,13 @@ export type Product = {
   titleTag: string
 }
 
+export type SkuNonStructuredAttribute = {
+  id: string
+  name: string
+  value: string
+  visible: boolean
+}
+
 export type Item = {
   complementName: string
   ean: string
@@ -71,6 +78,7 @@ export type Item = {
   unitMultiplier: number
   variations: Array<{ name: string; values: string[] }>
   videos: Array<{ videoUrl: string }>
+  attributes?: SkuNonStructuredAttribute[]
 }
 
 export type SkuSpecification = {
