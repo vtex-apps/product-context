@@ -29,7 +29,7 @@ const defaultState: ProductContextState = {
   },
 }
 
-function reducer(
+export function reducer(
   state: ProductContextState,
   action: Actions
 ): ProductContextState {
@@ -93,11 +93,30 @@ function reducer(
 
     case 'SET_SELECTED_ITEM': {
       const args = action.args || {}
+      const { selectedImageVariationSKU } = state.skuSelector
+
+      // Both guards are required. Selecting an image variation dispatches
+      // SELECT_IMAGE_VARIATION and only then redirects, which lands here with
+      // that same SKU, so clearing on equality would undo it. And the provider
+      // re-dispatches this action whenever the product object identity changes,
+      // with the item unchanged, which must not drop a valid selection either.
+      const itemChanged = args.item?.itemId !== state.selectedItem?.itemId
+      const pointsToAnotherItem =
+        selectedImageVariationSKU != null &&
+        selectedImageVariationSKU !== args.item?.itemId
 
       return {
         ...state,
         loadingItem: false,
         selectedItem: args.item,
+        ...(itemChanged && pointsToAnotherItem
+          ? {
+              skuSelector: {
+                ...state.skuSelector,
+                selectedImageVariationSKU: null,
+              },
+            }
+          : {}),
       }
     }
 

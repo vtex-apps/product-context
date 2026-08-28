@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `SET_SELECTED_ITEM` now clears a stale `skuSelector.selectedImageVariationSKU`, so components that give it priority over `selectedItem` (such as the product gallery) stop rendering a previously selected SKU after a non-color specification changes.
+
 ## [0.11.0] - 2026-05-26
 
 ### Added
