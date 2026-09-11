@@ -31,3 +31,17 @@ the pin is only cleared on genuine explicit selections.
 Both frames were captured live on `storecomponents` (`/classic-shoes/p`), driving the
 same SKU-selector click sequence against two dev workspaces linked with each commit
 (the reducer test suite covers the same three cases at the unit level).
+
+## Decision: the `fromQueryString` exception above was reverted
+
+After reproducing `mendescamara-review-after.png` live, we (with the PR author)
+decided the exception it depends on is the wrong call, and reverted it. Preserving
+the pin in the fallback case reintroduces exactly the invariant the base fix
+(`94c1cac`) exists to guarantee — the gallery must always match `selectedItem`, even
+when `selectedItem` is itself just a fallback the shopper never explicitly chose.
+`mendescamara-review-after.png` is kept here for the historical record of what the
+rejected exception produced; it is **not** what shipped.
+
+| file | what it shows |
+| --- | --- |
+| `mendescamara-review-final.png` | The shipped behaviour: same flow as above, pin **not** preserved. Pixel-identical to `mendescamara-review-before.png` — clearing the pin on this fallback is treated like any other item change. |
