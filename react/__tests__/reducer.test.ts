@@ -20,10 +20,14 @@ const buildState = (
     assemblyOptions: { items: {}, inputValues: {}, areGroupsValid: {} },
   } as any)
 
-const selectItem = (state: ProductContextState, itemId: string) =>
+const selectItem = (
+  state: ProductContextState,
+  itemId: string,
+  fromQueryString?: boolean
+) =>
   reducer(state, {
     type: 'SET_SELECTED_ITEM',
-    args: { item: { itemId } },
+    args: { item: { itemId }, fromQueryString },
   } as any)
 
 describe('SET_SELECTED_ITEM', () => {
@@ -61,5 +65,28 @@ describe('SET_SELECTED_ITEM', () => {
 
     expect(result.loadingItem).toBe(false)
     expect(result.selectedItem?.itemId).toBe('2')
+  })
+
+  it('keeps the pin when the incoming item is a fallback, not an explicit selection', () => {
+    // Picking a colour while other variations are still unselected redirects
+    // with a cleared skuId (fromQueryString: false), landing on a fallback
+    // item that is neither the previous selection nor the pin. The pin must
+    // survive that fallback.
+    const result = selectItem(buildState('1', '2'), '3', false)
+
+    expect(result.selectedItem?.itemId).toBe('3')
+    expect(result.skuSelector.selectedImageVariationSKU).toBe('2')
+  })
+
+  it('clears the pin when the incoming item is an explicit selection', () => {
+    const result = selectItem(buildState('1', '2'), '3', true)
+
+    expect(result.skuSelector.selectedImageVariationSKU).toBeNull()
+  })
+
+  it('clears the pin when fromQueryString is not provided, preserving prior behaviour', () => {
+    const result = selectItem(buildState('1', '2'), '3')
+
+    expect(result.skuSelector.selectedImageVariationSKU).toBeNull()
   })
 })

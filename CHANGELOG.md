@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `SET_SELECTED_ITEM` now clears a stale `skuSelector.selectedImageVariationSKU`, so components that give it priority over `selectedItem` (such as the product gallery) stop rendering a previously selected SKU after a non-color specification changes.
+- That clearing no longer fires when the incoming item is a query-string fallback (e.g. picking a colour while other variations are still unselected clears `skuId` and lands on the first available item) instead of an explicit selection, so a valid pin set by a prior colour selection is preserved.
 
 ## [0.11.0] - 2026-05-26
 
