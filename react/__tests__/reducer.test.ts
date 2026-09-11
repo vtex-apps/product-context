@@ -40,19 +40,12 @@ describe('SET_SELECTED_ITEM', () => {
     expect(result.skuSelector.selectedImageVariationSKU).toBe('2')
   })
 
-  // Regression for a Critical bug found while QA-reviewing PR #88's
-  // discussion: this used to require the incoming item to also differ from
-  // the *previous* selectedItem ("itemChanged") before clearing, on top of
-  // pointsToAnotherItem. That extra condition was meant to protect the
-  // same-item re-dispatch case below, but that case is already covered by
-  // the pin equalling the item (see the next test) — the only place the
-  // extra condition ever did something was here, where it wrongly kept a
-  // pin that already disagreed with the incoming item. That is exactly what
-  // happens when a shopper lands on the catalog's fallback item (e.g. no
-  // `skuId` in the URL at all — the common case), picks a colour while
-  // another variation is unselected, and the resulting fallback happens to
-  // resolve back to that same starting item: `selectedItem` never changes,
-  // but the pin was just set to a different colour and must still clear.
+  /*
+   * Regression for a Critical bug found while QA-reviewing PR #88: a pin
+   * that disagrees with the incoming item must clear even if that item
+   * happens to equal the previous selectedItem (e.g. landing back on the
+   * catalog's fallback item after picking a colour with no size selected).
+   */
   it('clears the image variation SKU even when the selected item did not change', () => {
     const result = selectItem(buildState('1', '2'), '1')
 
@@ -83,13 +76,8 @@ describe('SET_SELECTED_ITEM', () => {
     expect(result.selectedItem?.itemId).toBe('2')
   })
 
-  // https://github.com/vtex-apps/product-context/pull/88 — picking a colour
-  // while another variation is still unselected also lands here with a
-  // fallback item (the query string's skuId gets cleared). An exception that
-  // preserved the pin in that case was considered and rejected: the gallery
-  // must always match `selectedItem`, even when `selectedItem` itself is
-  // just a fallback the shopper never explicitly chose. This case is no
-  // different from any other item change, so it clears like the rest.
+  // https://github.com/vtex-apps/product-context/pull/88 — same as above,
+  // but landing on an unrelated fallback item instead of the same one.
   it('clears the image variation SKU even when the incoming item is an unrelated fallback', () => {
     const result = selectItem(buildState('1', '2'), '3')
 

@@ -95,31 +95,12 @@ export function reducer(
       const args = action.args || {}
       const { selectedImageVariationSKU } = state.skuSelector
 
-      // Clear the pin whenever it disagrees with the incoming item — that is
-      // the only condition that matters, and it already covers every case:
-      //
-      // - Selecting an image variation dispatches SELECT_IMAGE_VARIATION and
-      //   only then redirects, which lands here with that same SKU, so the
-      //   pin already equals the incoming item and is correctly left alone.
-      // - The provider re-dispatches this action whenever the product object
-      //   identity changes, with the item unchanged; if the pin still equals
-      //   that item, it's correctly left alone too.
-      // - Picking a colour while another variation is still unselected
-      //   redirects with a cleared skuId and lands on the query-string
-      //   fallback item (the first available item in the catalog) — which
-      //   must clear the pin like any other mismatch, even when that
-      //   fallback happens to equal the item the shopper started from (this
-      //   is the common case: landing on a PDP with no `skuId` in the URL at
-      //   all resolves to the same fallback item). An earlier version of
-      //   this guard also required `args.item?.itemId !==
-      //   state.selectedItem?.itemId` ("itemChanged"), which was meant to
-      //   protect the same-item-re-dispatch case above, but that case is
-      //   already covered by the pin equalling the item — the extra
-      //   condition only ever did something in this fallback-to-same-item
-      //   case, where it wrongly suppressed the clear (see
-      //   https://github.com/vtex-apps/product-context/pull/88): the gallery
-      //   must always match `selectedItem`, even when `selectedItem` itself
-      //   is just a fallback the shopper never explicitly chose.
+      /*
+       * Clear the pin whenever it disagrees with the incoming item, even if
+       * that item is just a fallback and happens to match what was already
+       * selected (e.g. no `skuId` in the URL). The gallery must always match
+       * `selectedItem`. See https://github.com/vtex-apps/product-context/pull/88
+       */
       const pointsToAnotherItem =
         selectedImageVariationSKU != null &&
         selectedImageVariationSKU !== args.item?.itemId
