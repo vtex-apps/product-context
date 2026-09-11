@@ -64,15 +64,7 @@ export type Actions =
     >
   | Action<'SET_BUY_BUTTON_CLICKED', { args: { clicked: boolean } }>
   | Action<'SKU_SELECTOR_SET_IS_VISIBLE', { args: { isVisible: boolean } }>
-  | Action<
-      'SET_SELECTED_ITEM',
-      {
-        args: {
-          item: Item | undefined | null
-          fromQueryString?: boolean
-        }
-      }
-    >
+  | Action<'SET_SELECTED_ITEM', { args: { item: Item | undefined | null } }>
   | Action<
       'SET_ASSEMBLY_OPTIONS',
       {
@@ -108,14 +100,7 @@ function useSelectedItemFromId(
 
     dispatch({
       type: 'SET_SELECTED_ITEM',
-      args: {
-        item: getSelectedItem(skuId, items),
-        // Distinguishes an explicit selection (skuId present in the query
-        // string) from a fallback (e.g. skuId cleared because the shopper
-        // has an incomplete variation selection). See the reducer for why
-        // this matters for `skuSelector.selectedImageVariationSKU`.
-        fromQueryString: Boolean(skuId),
-      },
+      args: { item: getSelectedItem(skuId, items) },
     })
   }, [dispatch, skuId, product])
 }

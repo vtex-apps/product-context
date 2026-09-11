@@ -20,14 +20,10 @@ const buildState = (
     assemblyOptions: { items: {}, inputValues: {}, areGroupsValid: {} },
   } as any)
 
-const selectItem = (
-  state: ProductContextState,
-  itemId: string,
-  fromQueryString?: boolean
-) =>
+const selectItem = (state: ProductContextState, itemId: string) =>
   reducer(state, {
     type: 'SET_SELECTED_ITEM',
-    args: { item: { itemId }, fromQueryString },
+    args: { item: { itemId } },
   } as any)
 
 describe('SET_SELECTED_ITEM', () => {
@@ -67,26 +63,17 @@ describe('SET_SELECTED_ITEM', () => {
     expect(result.selectedItem?.itemId).toBe('2')
   })
 
-  it('keeps the pin when the incoming item is a fallback, not an explicit selection', () => {
-    // Picking a colour while other variations are still unselected redirects
-    // with a cleared skuId (fromQueryString: false), landing on a fallback
-    // item that is neither the previous selection nor the pin. The pin must
-    // survive that fallback.
-    const result = selectItem(buildState('1', '2'), '3', false)
-
-    expect(result.selectedItem?.itemId).toBe('3')
-    expect(result.skuSelector.selectedImageVariationSKU).toBe('2')
-  })
-
-  it('clears the pin when the incoming item is an explicit selection', () => {
-    const result = selectItem(buildState('1', '2'), '3', true)
-
-    expect(result.skuSelector.selectedImageVariationSKU).toBeNull()
-  })
-
-  it('clears the pin when fromQueryString is not provided, preserving prior behaviour', () => {
+  // https://github.com/vtex-apps/product-context/pull/88 — picking a colour
+  // while another variation is still unselected also lands here with a
+  // fallback item (the query string's skuId gets cleared). An exception that
+  // preserved the pin in that case was considered and rejected: the gallery
+  // must always match `selectedItem`, even when `selectedItem` itself is
+  // just a fallback the shopper never explicitly chose. This case is no
+  // different from any other item change, so it clears like the rest.
+  it('clears the image variation SKU even when the incoming item is an unrelated fallback', () => {
     const result = selectItem(buildState('1', '2'), '3')
 
+    expect(result.selectedItem?.itemId).toBe('3')
     expect(result.skuSelector.selectedImageVariationSKU).toBeNull()
   })
 })

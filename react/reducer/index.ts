@@ -95,26 +95,29 @@ export function reducer(
       const args = action.args || {}
       const { selectedImageVariationSKU } = state.skuSelector
 
-      // All three guards are required. Selecting an image variation dispatches
+      // Both guards are required. Selecting an image variation dispatches
       // SELECT_IMAGE_VARIATION and only then redirects, which lands here with
-      // that same SKU, so clearing on equality would undo it. The provider
+      // that same SKU, so clearing on equality would undo it. And the provider
       // re-dispatches this action whenever the product object identity changes,
       // with the item unchanged, which must not drop a valid selection either.
-      // And picking a colour while other variations are still unselected
-      // redirects with a cleared skuId (fromQueryString: false), landing here
-      // on a fallback item that is neither the previous selection nor the
-      // pin — that fallback must not clear a pin that is still in effect.
+      //
+      // This also clears the pin when the incoming item is a query-string
+      // fallback (e.g. picking a colour while another variation is still
+      // unselected clears `skuId` and lands on the first available item) —
+      // considered and deliberately rejected an exception for that case
+      // (see https://github.com/vtex-apps/product-context/pull/88): the
+      // gallery must always match `selectedItem`, even when `selectedItem`
+      // itself is just a fallback the shopper never explicitly chose.
       const itemChanged = args.item?.itemId !== state.selectedItem?.itemId
       const pointsToAnotherItem =
         selectedImageVariationSKU != null &&
         selectedImageVariationSKU !== args.item?.itemId
-      const isFallbackItem = args.fromQueryString === false
 
       return {
         ...state,
         loadingItem: false,
         selectedItem: args.item,
-        ...(itemChanged && pointsToAnotherItem && !isFallbackItem
+        ...(itemChanged && pointsToAnotherItem
           ? {
               skuSelector: {
                 ...state.skuSelector,
