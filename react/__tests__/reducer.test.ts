@@ -40,10 +40,30 @@ describe('SET_SELECTED_ITEM', () => {
     expect(result.skuSelector.selectedImageVariationSKU).toBe('2')
   })
 
-  it('keeps the image variation SKU when the selected item did not change', () => {
+  // Regression for a Critical bug found while QA-reviewing PR #88's
+  // discussion: this used to require the incoming item to also differ from
+  // the *previous* selectedItem ("itemChanged") before clearing, on top of
+  // pointsToAnotherItem. That extra condition was meant to protect the
+  // same-item re-dispatch case below, but that case is already covered by
+  // the pin equalling the item (see the next test) — the only place the
+  // extra condition ever did something was here, where it wrongly kept a
+  // pin that already disagreed with the incoming item. That is exactly what
+  // happens when a shopper lands on the catalog's fallback item (e.g. no
+  // `skuId` in the URL at all — the common case), picks a colour while
+  // another variation is unselected, and the resulting fallback happens to
+  // resolve back to that same starting item: `selectedItem` never changes,
+  // but the pin was just set to a different colour and must still clear.
+  it('clears the image variation SKU even when the selected item did not change', () => {
     const result = selectItem(buildState('1', '2'), '1')
 
-    expect(result.skuSelector.selectedImageVariationSKU).toBe('2')
+    expect(result.selectedItem?.itemId).toBe('1')
+    expect(result.skuSelector.selectedImageVariationSKU).toBeNull()
+  })
+
+  it('keeps the image variation SKU across a same-item re-dispatch when it already matches', () => {
+    const result = selectItem(buildState('1', '1'), '1')
+
+    expect(result.skuSelector.selectedImageVariationSKU).toBe('1')
   })
 
   it('leaves the rest of the sku selector state untouched', () => {

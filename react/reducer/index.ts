@@ -95,20 +95,31 @@ export function reducer(
       const args = action.args || {}
       const { selectedImageVariationSKU } = state.skuSelector
 
-      // Both guards are required. Selecting an image variation dispatches
-      // SELECT_IMAGE_VARIATION and only then redirects, which lands here with
-      // that same SKU, so clearing on equality would undo it. And the provider
-      // re-dispatches this action whenever the product object identity changes,
-      // with the item unchanged, which must not drop a valid selection either.
+      // Clear the pin whenever it disagrees with the incoming item — that is
+      // the only condition that matters, and it already covers every case:
       //
-      // This also clears the pin when the incoming item is a query-string
-      // fallback (e.g. picking a colour while another variation is still
-      // unselected clears `skuId` and lands on the first available item) —
-      // considered and deliberately rejected an exception for that case
-      // (see https://github.com/vtex-apps/product-context/pull/88): the
-      // gallery must always match `selectedItem`, even when `selectedItem`
-      // itself is just a fallback the shopper never explicitly chose.
-      const itemChanged = args.item?.itemId !== state.selectedItem?.itemId
+      // - Selecting an image variation dispatches SELECT_IMAGE_VARIATION and
+      //   only then redirects, which lands here with that same SKU, so the
+      //   pin already equals the incoming item and is correctly left alone.
+      // - The provider re-dispatches this action whenever the product object
+      //   identity changes, with the item unchanged; if the pin still equals
+      //   that item, it's correctly left alone too.
+      // - Picking a colour while another variation is still unselected
+      //   redirects with a cleared skuId and lands on the query-string
+      //   fallback item (the first available item in the catalog) — which
+      //   must clear the pin like any other mismatch, even when that
+      //   fallback happens to equal the item the shopper started from (this
+      //   is the common case: landing on a PDP with no `skuId` in the URL at
+      //   all resolves to the same fallback item). An earlier version of
+      //   this guard also required `args.item?.itemId !==
+      //   state.selectedItem?.itemId` ("itemChanged"), which was meant to
+      //   protect the same-item-re-dispatch case above, but that case is
+      //   already covered by the pin equalling the item — the extra
+      //   condition only ever did something in this fallback-to-same-item
+      //   case, where it wrongly suppressed the clear (see
+      //   https://github.com/vtex-apps/product-context/pull/88): the gallery
+      //   must always match `selectedItem`, even when `selectedItem` itself
+      //   is just a fallback the shopper never explicitly chose.
       const pointsToAnotherItem =
         selectedImageVariationSKU != null &&
         selectedImageVariationSKU !== args.item?.itemId
@@ -117,7 +128,7 @@ export function reducer(
         ...state,
         loadingItem: false,
         selectedItem: args.item,
-        ...(itemChanged && pointsToAnotherItem
+        ...(pointsToAnotherItem
           ? {
               skuSelector: {
                 ...state.skuSelector,
