@@ -12,3 +12,22 @@ does not accept file uploads through `gh`/the API — a PR body can only point a
 Both frames were captured on `storecomponents` (`/classic-shoes/p`) at a 1280x760
 viewport, running the identical scripted interaction against each environment:
 pin an image variation on SKU `35`, then move the selection to SKU `310124175`.
+
+## Follow-up: @mendescamara's review comment
+
+@mendescamara flagged that the fix above could regress a different flow: clicking a
+colour swatch while another variation (e.g. Size) is still unselected. `SKUSelector`
+still calls `redirectToSku(null)` in that case (clearing `skuId` from the URL) even
+though a valid image-variation pin was just set, and the guard added above would wipe
+that pin because it can't tell an explicit selection from a query-string fallback. The
+follow-up fix threads a `fromQueryString` flag from the provider into the reducer so
+the pin is only cleared on genuine explicit selections.
+
+| file | what it shows |
+| --- | --- |
+| `mendescamara-review-before.png` | Same reducer guard as above, **without** the `fromQueryString` follow-up. Flow: start at SKU `37` (Red/42, out of stock), deselect Size, click Green (ambiguous: SKU `35` Green/40 out of stock, SKU `310124227` Green/41 in stock). `skuId` is cleared from the URL, `selectedItem` falls back to SKU `310124175` (White/41) — and the pin is wrongly cleared too (`selectedImageVariationSKU: null`), so the gallery snaps back to White even though the shopper just clicked Green. |
+| `mendescamara-review-after.png` | Identical flow, with the `fromQueryString` follow-up linked. `selectedItem` still falls back to SKU `310124175` (White/41) for price/stock purposes, but the pin is preserved (`selectedImageVariationSKU: "310124227"`), so the gallery correctly keeps showing the Green the shopper picked. |
+
+Both frames were captured live on `storecomponents` (`/classic-shoes/p`), driving the
+same SKU-selector click sequence against two dev workspaces linked with each commit
+(the reducer test suite covers the same three cases at the unit level).
