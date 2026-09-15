@@ -171,10 +171,24 @@ export function reducer(
   }
 }
 
-export function getSelectedItem(skuId: string | undefined, items: Item[]) {
-  return skuId
-    ? items.find((item) => item.itemId === skuId)
-    : items.find(findAvailableProduct) ?? items[0]
+export function getSelectedItem(
+  skuId: string | undefined,
+  items: Item[],
+  imageVariationSKU?: string | null
+) {
+  if (skuId) {
+    return items.find((item) => item.itemId === skuId)
+  }
+
+  /* No `skuId` means the selection is incomplete. Honour the colour the shopper
+   * clicked instead of the catalog's first available item, so the gallery can
+   * match `selectedItem` without either showing an unselected colour or
+   * discarding the click. */
+  const pinnedItem = imageVariationSKU
+    ? items.find((item) => item.itemId === imageVariationSKU)
+    : undefined
+
+  return pinnedItem ?? items.find(findAvailableProduct) ?? items[0]
 }
 
 function initReducer({ query, product }: ProductAndQuery) {
