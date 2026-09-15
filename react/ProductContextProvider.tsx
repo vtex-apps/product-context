@@ -93,7 +93,8 @@ function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
 function useSelectedItemFromId(
   dispatch: Dispatch<Actions>,
   product: MaybeProduct,
-  skuId?: string
+  skuId?: string,
+  query?: Record<string, any>
 ) {
   useEffect(() => {
     const items = product?.items ?? []
@@ -102,7 +103,10 @@ function useSelectedItemFromId(
       type: 'SET_SELECTED_ITEM',
       args: { item: getSelectedItem(skuId, items) },
     })
-  }, [dispatch, skuId, product])
+    /* `query` also triggers this: a redirect can flip `skuId` between
+     * absent and empty without changing the derived value, but a stale pin
+     * still needs reconciling. */
+  }, [dispatch, skuId, product, query])
 }
 
 const ProductContextProvider: FC<ProductAndQuery> = ({
@@ -119,7 +123,7 @@ const ProductContextProvider: FC<ProductAndQuery> = ({
     product?.items
   )
 
-  useSelectedItemFromId(dispatch, product, selectedSkuQueryString)
+  useSelectedItemFromId(dispatch, product, selectedSkuQueryString, query)
 
   return (
     <ProductContext.Provider value={state}>
