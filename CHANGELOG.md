@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2026-09-24
+
 ### Fixed
 
 - `SET_SELECTED_ITEM` now clears a stale `skuSelector.selectedImageVariationSKU` whenever it disagrees with the incoming item, even when that item is just a fallback and happens to match the previous selection. Components that give the pin priority over `selectedItem` (such as the product gallery) no longer render a stale SKU in that case.
