@@ -1,17 +1,19 @@
 /* eslint-env jest */
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { render } from '@vtex/test-tools/react'
 
 // eslint-disable-next-line jest/no-mocks-import
 import { getProduct, getItem } from '../__mocks__/productMock'
-import ProductContextProvider from '../ProductContextProvider'
+import ProductContextProvider, {
+  ProductAndQuery,
+} from '../ProductContextProvider'
 import ProductContext from '../ProductContext'
 import ProductDispatchContext from '../ProductDispatchContext'
 
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(
+  const { selectedItem, product, selectedQuantity, skuSelector } = useContext(
     ProductContext
   ) as any
 
@@ -26,8 +28,22 @@ const ProductPageMock = () => {
         <div>no product</div>
       )}
       <div>Selected Quantity: {selectedQuantity}</div>
+      <div>Pin: {skuSelector?.selectedImageVariationSKU ?? 'none'}</div>
     </div>
   )
+}
+
+const PinImageVariationMock = ({ itemId }: { itemId: string }) => {
+  const dispatch = useProductDispatch()
+
+  useEffect(() => {
+    dispatch?.({
+      type: 'SELECT_IMAGE_VARIATION',
+      args: { selectedImageVariationSKU: itemId },
+    })
+  }, [dispatch, itemId])
+
+  return null
 }
 
 describe('ProductContextProvider component', () => {
@@ -162,6 +178,113 @@ describe('ProductContextProvider component', () => {
 
     getSelectedItemId(itemtwo)
     getSelectedItemName(itemtwo)
+  })
+
+  it('reconciles a stale pin when the query object changes without a skuId', () => {
+    const itemOne = getItem('1', 90, 10)
+    const itemTwo = getItem('2', 90, 10)
+    const product = getProduct({ items: [itemOne, itemTwo] })
+    const emptyQuery = {}
+
+    const { getByText, rerender } = render(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemOne.itemId}`)
+    getByText('Pin: none')
+
+    rerender(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+        <PinImageVariationMock itemId={itemTwo.itemId} />
+      </ProductContextProvider>
+    )
+
+    getByText(`Pin: ${itemTwo.itemId}`)
+
+    rerender(
+      <ProductContextProvider product={product} query={{ skuId: '' }}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemTwo.itemId}`)
+    getByText(`Pin: ${itemTwo.itemId}`)
+  })
+
+  it('falls back to the first available item when the pin points nowhere', () => {
+    const itemOne = getItem('1', 90, 10)
+    const itemTwo = getItem('2', 90, 10)
+    const product = getProduct({ items: [itemOne, itemTwo] }) as any
+    const emptyQuery = {}
+
+    const { getByText, rerender } = render(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    rerender(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+        <PinImageVariationMock itemId="does-not-exist" />
+      </ProductContextProvider>
+    )
+
+    getByText('Pin: does-not-exist')
+
+    rerender(
+      <ProductContextProvider product={product} query={{ skuId: '' }}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemOne.itemId}`)
+    getByText('Pin: none')
+  })
+
+  it('clears a stale pin when skuId in the query selects another item', () => {
+    const green41 = getItem('green-41', 90, 10)
+    const green40 = getItem('green-40', 90, 10)
+    const product = getProduct({ items: [green41, green40] })
+
+    const { getByText, rerender } = render(
+      <ProductContextProvider
+        product={product}
+        query={{ skuId: green41.itemId }}
+      >
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${green41.itemId}`)
+    getByText(`Pin: none`)
+
+    rerender(
+      <ProductContextProvider
+        product={product}
+        query={{ skuId: green41.itemId }}
+      >
+        <ProductPageMock />
+        <PinImageVariationMock itemId={green41.itemId} />
+      </ProductContextProvider>
+    )
+
+    getByText(`Pin: ${green41.itemId}`)
+
+    rerender(
+      <ProductContextProvider
+        product={product}
+        query={{ skuId: green40.itemId }}
+      >
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${green40.itemId}`)
+    getByText('Pin: none')
   })
 
   it('should dispatch action with bad args and not break anything', () => {

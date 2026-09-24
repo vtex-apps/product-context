@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.11.0] - 2026-05-26
+### Fixed
+
+- Keep `skuSelector.selectedImageVariationSKU` aligned with `selectedItem` on multi-specification PDPs so gallery, SKU selector images, price, and buy button describe the same SKU (KI 669619).
 
 ### Added
 

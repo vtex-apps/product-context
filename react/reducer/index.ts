@@ -29,7 +29,7 @@ const defaultState: ProductContextState = {
   },
 }
 
-function reducer(
+export function reducer(
   state: ProductContextState,
   action: Actions
 ): ProductContextState {
@@ -93,11 +93,27 @@ function reducer(
 
     case 'SET_SELECTED_ITEM': {
       const args = action.args || {}
+      const { selectedImageVariationSKU } = state.skuSelector
+
+      // ProductImages prefers `selectedImageVariationSKU` over `selectedItem`.
+      // Drop a pin that no longer matches the resolved SKU so the gallery follows
+      // the same item as price and buy (KI 669619).
+      const pinDisagreesWithItem =
+        selectedImageVariationSKU != null &&
+        selectedImageVariationSKU !== args.item?.itemId
 
       return {
         ...state,
         loadingItem: false,
         selectedItem: args.item,
+        ...(pinDisagreesWithItem
+          ? {
+              skuSelector: {
+                ...state.skuSelector,
+                selectedImageVariationSKU: null,
+              },
+            }
+          : {}),
       }
     }
 
@@ -152,10 +168,20 @@ function reducer(
   }
 }
 
-export function getSelectedItem(skuId: string | undefined, items: Item[]) {
-  return skuId
-    ? items.find((item) => item.itemId === skuId)
-    : items.find(findAvailableProduct) ?? items[0]
+export function getSelectedItem(
+  skuId: string | undefined,
+  items: Item[],
+  imageVariationSKU?: string | null
+) {
+  if (skuId) {
+    return items.find((item) => item.itemId === skuId)
+  }
+
+  const pinnedItem = imageVariationSKU
+    ? items.find((item) => item.itemId === imageVariationSKU)
+    : undefined
+
+  return pinnedItem ?? items.find(findAvailableProduct) ?? items[0]
 }
 
 function initReducer({ query, product }: ProductAndQuery) {
