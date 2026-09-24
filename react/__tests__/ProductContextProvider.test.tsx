@@ -11,7 +11,7 @@ import ProductDispatchContext from '../ProductDispatchContext'
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(
+  const { selectedItem, product, selectedQuantity, skuSelector } = useContext(
     ProductContext
   ) as any
 
@@ -20,6 +20,9 @@ const ProductPageMock = () => {
       <div>Product Page</div>
       <div>Selected Item id: {selectedItem?.itemId}</div>
       <div>Selected Item name: {selectedItem?.name}</div>
+      <div>
+        Image variation SKU: {skuSelector?.selectedImageVariationSKU ?? 'none'}
+      </div>
       {product ? (
         <div>product slug: {product?.linkText}</div>
       ) : (
@@ -58,6 +61,8 @@ describe('ProductContextProvider component', () => {
         getByText(`Selected Item id: ${item.itemId}`),
       getSelectedItemName: (item: { name: string }) =>
         getByText(`Selected Item name: ${item.name}`),
+      getImageVariationSKU: (skuId: string) =>
+        getByText(`Image variation SKU: ${skuId}`),
       getProductSlug: (product: { linkText: string }) =>
         getByText(`product slug: ${product.linkText}`),
       rerender: (newProps: any) =>
@@ -162,6 +167,25 @@ describe('ProductContextProvider component', () => {
 
     getSelectedItemId(itemtwo)
     getSelectedItemName(itemtwo)
+  })
+
+  it('should keep selectedImageVariationSKU aligned with the query-selected SKU', async () => {
+    const itemone = getItem('1', 90, 1)
+    const itemtwo = getItem('2', 90, 10)
+    const newProduct = getProduct({
+      items: [itemone, itemtwo],
+    })
+
+    const { getImageVariationSKU, rerender } = renderComponent({
+      product: newProduct,
+      query: { skuId: itemone.itemId },
+    })
+
+    getImageVariationSKU(itemone.itemId)
+
+    rerender({ product: newProduct, query: { skuId: itemtwo.itemId } })
+
+    getImageVariationSKU(itemtwo.itemId)
   })
 
   it('should dispatch action with bad args and not break anything', () => {

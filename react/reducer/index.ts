@@ -29,7 +29,7 @@ const defaultState: ProductContextState = {
   },
 }
 
-function reducer(
+export function reducer(
   state: ProductContextState,
   action: Actions
 ): ProductContextState {
@@ -93,11 +93,25 @@ function reducer(
 
     case 'SET_SELECTED_ITEM': {
       const args = action.args || {}
+      const itemId = args.item?.itemId ?? null
+      const { selectedImageVariationSKU } = state.skuSelector
+      const selectedItemChanged = state.selectedItem?.itemId !== itemId
+      const imageVariationIsStale =
+        selectedImageVariationSKU != null &&
+        selectedImageVariationSKU !== itemId
 
       return {
         ...state,
         loadingItem: false,
         selectedItem: args.item,
+        ...(selectedItemChanged || imageVariationIsStale
+          ? {
+              skuSelector: {
+                ...state.skuSelector,
+                selectedImageVariationSKU: itemId,
+              },
+            }
+          : {}),
       }
     }
 
@@ -160,13 +174,19 @@ export function getSelectedItem(skuId: string | undefined, items: Item[]) {
 
 function initReducer({ query, product }: ProductAndQuery) {
   const items = product?.items ?? []
+  const selectedItem = getSelectedItem(
+    getSelectedSKUFromQueryString(query, items),
+    items
+  )
+  const selectedImageVariationSKU = selectedItem?.itemId ?? null
 
   return {
     ...defaultState,
-    selectedItem: getSelectedItem(
-      getSelectedSKUFromQueryString(query, items),
-      items
-    ),
+    selectedItem,
+    skuSelector: {
+      ...defaultState.skuSelector,
+      selectedImageVariationSKU,
+    },
     product,
   }
 }
