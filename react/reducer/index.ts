@@ -93,11 +93,16 @@ function reducer(
 
     case 'SET_SELECTED_ITEM': {
       const args = action.args || {}
+      const item = args.item
 
       return {
         ...state,
         loadingItem: false,
-        selectedItem: args.item,
+        selectedItem: item,
+        skuSelector: {
+          ...state.skuSelector,
+          selectedImageVariationSKU: item?.itemId ?? null,
+        },
       }
     }
 
@@ -160,13 +165,18 @@ export function getSelectedItem(skuId: string | undefined, items: Item[]) {
 
 function initReducer({ query, product }: ProductAndQuery) {
   const items = product?.items ?? []
+  const selectedItem = getSelectedItem(
+    getSelectedSKUFromQueryString(query, items),
+    items
+  )
 
   return {
     ...defaultState,
-    selectedItem: getSelectedItem(
-      getSelectedSKUFromQueryString(query, items),
-      items
-    ),
+    selectedItem,
+    skuSelector: {
+      ...defaultState.skuSelector,
+      selectedImageVariationSKU: selectedItem?.itemId ?? null,
+    },
     product,
   }
 }

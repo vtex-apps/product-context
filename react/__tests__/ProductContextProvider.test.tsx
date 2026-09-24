@@ -11,15 +11,22 @@ import ProductDispatchContext from '../ProductDispatchContext'
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(
-    ProductContext
-  ) as any
+  const {
+    selectedItem,
+    product,
+    selectedQuantity,
+    skuSelector,
+  } = useContext(ProductContext) as any
 
   return (
     <div>
       <div>Product Page</div>
       <div>Selected Item id: {selectedItem?.itemId}</div>
       <div>Selected Item name: {selectedItem?.name}</div>
+      <div>
+        Selected image variation SKU:{' '}
+        {skuSelector?.selectedImageVariationSKU ?? 'null'}
+      </div>
       {product ? (
         <div>product slug: {product?.linkText}</div>
       ) : (
@@ -58,6 +65,10 @@ describe('ProductContextProvider component', () => {
         getByText(`Selected Item id: ${item.itemId}`),
       getSelectedItemName: (item: { name: string }) =>
         getByText(`Selected Item name: ${item.name}`),
+      getSelectedImageVariationSKU: (skuId: string | null) =>
+        getByText(
+          `Selected image variation SKU: ${skuId === null ? 'null' : skuId}`
+        ),
       getProductSlug: (product: { linkText: string }) =>
         getByText(`product slug: ${product.linkText}`),
       rerender: (newProps: any) =>
@@ -133,6 +144,74 @@ describe('ProductContextProvider component', () => {
 
     getSelectedItemId(itemWithQuantity)
     getSelectedItemName(itemWithQuantity)
+  })
+
+  it('should keep selectedImageVariationSKU in sync when changing query prop', () => {
+    const itemone = getItem('1', 90, 1)
+    const itemtwo = getItem('2', 90, 10)
+    const newProduct = getProduct({
+      items: [itemone, itemtwo],
+    })
+
+    const {
+      getSelectedItemId,
+      getSelectedImageVariationSKU,
+      rerender,
+    } = renderComponent({
+      product: newProduct,
+      query: { skuId: itemone.itemId },
+    })
+
+    getSelectedItemId(itemone)
+    getSelectedImageVariationSKU(itemone.itemId)
+
+    rerender({ product: newProduct, query: { skuId: itemtwo.itemId } })
+
+    getSelectedItemId(itemtwo)
+    getSelectedImageVariationSKU(itemtwo.itemId)
+  })
+
+  it('should sync selectedImageVariationSKU when SET_SELECTED_ITEM is dispatched', () => {
+    const itemone = getItem('1', 90, 1)
+    const itemtwo = getItem('2', 90, 10)
+    const newProduct = getProduct({
+      items: [itemone, itemtwo],
+    })
+
+    const SelectOtherItemMock = () => {
+      const dispatch = useProductDispatch()
+
+      return (
+        <div>
+          <ProductPageMock />
+          <button
+            type="button"
+            onClick={() =>
+              dispatch?.({
+                type: 'SET_SELECTED_ITEM',
+                args: { item: itemtwo },
+              })
+            }
+          >
+            Select other item
+          </button>
+        </div>
+      )
+    }
+
+    const { getByText } = render(
+      <ProductContextProvider product={newProduct} query={{}}>
+        <SelectOtherItemMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemone.itemId}`)
+    getByText(`Selected image variation SKU: ${itemone.itemId}`)
+
+    getByText('Select other item').click()
+
+    getByText(`Selected Item id: ${itemtwo.itemId}`)
+    getByText(`Selected image variation SKU: ${itemtwo.itemId}`)
   })
 
   it('should switch items when changing query prop', async () => {
