@@ -1,4 +1,4 @@
-import React, { FC, useEffect, Dispatch } from 'react'
+import React, { FC, useEffect, useRef, Dispatch } from 'react'
 
 import ProductContext from './ProductContext'
 import { ProductDispatchContext } from './ProductDispatchContext'
@@ -90,19 +90,39 @@ function useProductInState(product: MaybeProduct, dispatch: Dispatch<Actions>) {
   }, [product, dispatch])
 }
 
-function useSelectedItemFromId(
-  dispatch: Dispatch<Actions>,
-  product: MaybeProduct,
+function useSelectedItemFromId({
+  dispatch,
+  product,
+  skuId,
+  query,
+  imageVariationSKU,
+}: {
+  dispatch: Dispatch<Actions>
+  product: MaybeProduct
   skuId?: string
-) {
+  query?: Record<string, any>
+  imageVariationSKU?: string | null
+}) {
+  /* Read the pin through a ref so setting it doesn't trigger this effect: it is
+   * set before the redirect lands, and running here with the previous `skuId`
+   * would clear it and undo the optimistic image update. */
+  const imageVariationSKURef = useRef(imageVariationSKU)
+
+  imageVariationSKURef.current = imageVariationSKU
+
   useEffect(() => {
     const items = product?.items ?? []
 
     dispatch({
       type: 'SET_SELECTED_ITEM',
-      args: { item: getSelectedItem(skuId, items) },
+      args: {
+        item: getSelectedItem(skuId, items, imageVariationSKURef.current),
+      },
     })
-  }, [dispatch, skuId, product])
+    /* `query` also triggers this: a redirect can flip `skuId` between
+     * absent and empty without changing the derived value, but a stale pin
+     * still needs reconciling. */
+  }, [dispatch, skuId, product, query])
 }
 
 const ProductContextProvider: FC<ProductAndQuery> = ({
@@ -119,7 +139,13 @@ const ProductContextProvider: FC<ProductAndQuery> = ({
     product?.items
   )
 
-  useSelectedItemFromId(dispatch, product, selectedSkuQueryString)
+  useSelectedItemFromId({
+    dispatch,
+    product,
+    skuId: selectedSkuQueryString,
+    query,
+    imageVariationSKU: state.skuSelector.selectedImageVariationSKU,
+  })
 
   return (
     <ProductContext.Provider value={state}>

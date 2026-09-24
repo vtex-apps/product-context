@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { render } from '@vtex/test-tools/react'
 
 // eslint-disable-next-line jest/no-mocks-import
@@ -11,7 +11,7 @@ import ProductDispatchContext from '../ProductDispatchContext'
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(
+  const { selectedItem, product, selectedQuantity, skuSelector } = useContext(
     ProductContext
   ) as any
 
@@ -26,8 +26,22 @@ const ProductPageMock = () => {
         <div>no product</div>
       )}
       <div>Selected Quantity: {selectedQuantity}</div>
+      <div>Pin: {skuSelector?.selectedImageVariationSKU ?? 'none'}</div>
     </div>
   )
+}
+
+const PinImageVariationMock = ({ itemId }: { itemId: string }) => {
+  const dispatch = useProductDispatch()
+
+  useEffect(() => {
+    dispatch?.({
+      type: 'SELECT_IMAGE_VARIATION',
+      args: { selectedImageVariationSKU: itemId },
+    })
+  }, [dispatch, itemId])
+
+  return null
 }
 
 describe('ProductContextProvider component', () => {
@@ -162,6 +176,79 @@ describe('ProductContextProvider component', () => {
 
     getSelectedItemId(itemtwo)
     getSelectedItemName(itemtwo)
+  })
+
+  it('should reconcile a stale pin when the query changes without changing the derived skuId', () => {
+    const itemOne = getItem('1', 90, 10)
+    const itemTwo = getItem('2', 90, 10)
+    const product = getProduct({ items: [itemOne, itemTwo] })
+    const emptyQuery = {}
+
+    const { getByText, rerender } = render(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemOne.itemId}`)
+    getByText('Pin: none')
+
+    /* Same `query` reference as above: only pins the item, no reconciliation yet. */
+    rerender(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+        <PinImageVariationMock itemId={itemTwo.itemId} />
+      </ProductContextProvider>
+    )
+
+    getByText(`Pin: ${itemTwo.itemId}`)
+
+    /*
+     * Regression for the bug mendescamara flagged on PR #88: a new `query`
+     * object still derives to no skuId, but must re-run SET_SELECTED_ITEM so
+     * the pin set above stops disagreeing with `selectedItem` — here by moving
+     * the selection onto the pinned item.
+     */
+    rerender(
+      <ProductContextProvider product={product} query={{ skuId: '' }}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemTwo.itemId}`)
+    getByText(`Pin: ${itemTwo.itemId}`)
+  })
+
+  it('should fall back to the first available item when the pin points nowhere', () => {
+    const itemOne = getItem('1', 90, 10)
+    const itemTwo = getItem('2', 90, 10)
+    const product = getProduct({ items: [itemOne, itemTwo] }) as any
+    const emptyQuery = {}
+
+    const { getByText, rerender } = render(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    /* Same `query` reference, so the pin is set without reconciling yet. */
+    rerender(
+      <ProductContextProvider product={product} query={emptyQuery}>
+        <ProductPageMock />
+        <PinImageVariationMock itemId="does-not-exist" />
+      </ProductContextProvider>
+    )
+
+    getByText('Pin: does-not-exist')
+
+    rerender(
+      <ProductContextProvider product={product} query={{ skuId: '' }}>
+        <ProductPageMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Selected Item id: ${itemOne.itemId}`)
+    getByText('Pin: none')
   })
 
   it('should dispatch action with bad args and not break anything', () => {

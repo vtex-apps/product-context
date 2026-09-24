@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `SET_SELECTED_ITEM` now clears a stale `skuSelector.selectedImageVariationSKU` whenever it disagrees with the incoming item, even when that item is just a fallback and happens to match the previous selection. Components that give the pin priority over `selectedItem` (such as the product gallery) no longer render a stale SKU in that case.
+- The pin is now also reconciled when the query string changes without changing the derived `skuId` (e.g. going from no `skuId` to an empty one), so it doesn't get stuck pointing at a colour that was clicked with another variation still unselected.
+
+### Changed
+
+- With no `skuId` to resolve, `getSelectedItem` now prefers the item pointed at by `skuSelector.selectedImageVariationSKU` over the first available one, so an incomplete selection keeps the colour the shopper clicked instead of falling back to an unrelated item. Behaviour is unchanged when nothing is pinned or when the pin matches no item.
+
 ## [0.11.0] - 2026-05-26
 
 ### Added
