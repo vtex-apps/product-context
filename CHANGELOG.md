@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep `skuSelector.selectedImageVariationSKU` in sync with `selectedItem` when the selected SKU changes, so product gallery and SKU selector images do not show a stale SKU.
+
 ## [0.11.0] - 2026-05-26
 
 ### Added

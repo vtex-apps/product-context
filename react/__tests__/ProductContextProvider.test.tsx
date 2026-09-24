@@ -11,7 +11,7 @@ import ProductDispatchContext from '../ProductDispatchContext'
 const { useProductDispatch } = ProductDispatchContext
 
 const ProductPageMock = () => {
-  const { selectedItem, product, selectedQuantity } = useContext(
+  const { selectedItem, product, selectedQuantity, skuSelector } = useContext(
     ProductContext
   ) as any
 
@@ -26,6 +26,9 @@ const ProductPageMock = () => {
         <div>no product</div>
       )}
       <div>Selected Quantity: {selectedQuantity}</div>
+      <div>
+        Image variation SKU: {skuSelector?.selectedImageVariationSKU ?? 'null'}
+      </div>
     </div>
   )
 }
@@ -162,6 +165,71 @@ describe('ProductContextProvider component', () => {
 
     getSelectedItemId(itemtwo)
     getSelectedItemName(itemtwo)
+  })
+
+  it('should initialize selectedImageVariationSKU from the selected item', () => {
+    const itemone = getItem('1', 90, 1)
+    const itemtwo = getItem('2', 90, 10)
+    const product = getProduct({ items: [itemone, itemtwo] })
+
+    const { getByText } = renderComponent({
+      product,
+      query: { skuId: itemtwo.itemId },
+    })
+
+    getByText(`Image variation SKU: ${itemtwo.itemId}`)
+  })
+
+  it('should sync selectedImageVariationSKU when the selected item changes', () => {
+    const itemone = getItem('1', 90, 1)
+    const itemtwo = getItem('2', 90, 10)
+    const product = getProduct({ items: [itemone, itemtwo] })
+
+    const DispatchMock = () => {
+      const dispatch = useProductDispatch()
+
+      return (
+        <div>
+          <ProductPageMock />
+          <button
+            type="button"
+            onClick={() =>
+              dispatch?.({
+                type: 'SELECT_IMAGE_VARIATION',
+                args: { selectedImageVariationSKU: itemone.itemId },
+              })
+            }
+          >
+            Pin image to item one
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              dispatch?.({
+                type: 'SET_SELECTED_ITEM',
+                args: { item: itemtwo },
+              })
+            }
+          >
+            Select item two
+          </button>
+        </div>
+      )
+    }
+
+    const { getByText } = render(
+      <ProductContextProvider {...getProps({ product })}>
+        <DispatchMock />
+      </ProductContextProvider>
+    )
+
+    getByText(`Image variation SKU: ${itemone.itemId}`)
+
+    getByText('Pin image to item one').click()
+    getByText(`Image variation SKU: ${itemone.itemId}`)
+
+    getByText('Select item two').click()
+    getByText(`Image variation SKU: ${itemtwo.itemId}`)
   })
 
   it('should dispatch action with bad args and not break anything', () => {
